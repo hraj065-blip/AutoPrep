@@ -1,0 +1,8 @@
+customer_id, customer name ,city,amount,signup_date,segment
+000101, Alice Jones ,New York,"1,240.50",03/04/2025,SMB
+000102,Bob Singh,Delhi,"2,300.00",2025-04-03,Enterprise
+000103, Charlie Kim,Seoul,unknown,13/04/2025,SMB
+000104,Dana Ruiz,London,"175.25",04/05/2025,Consumer
+000104,Dana Ruiz,London,"175.25",04/05/2025,Consumer
+000105,Erin Patel,Paris,"19.00",2025-05-04,consumer
+000106,Farah Ali,New York," 88.10 ",05/06/2025,SMB

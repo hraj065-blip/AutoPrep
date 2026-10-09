@@ -1,0 +1,3532 @@
+{
+  "mode": "deterministic",
+  "status": "COMPLETED",
+  "seed": 4242,
+  "cases": 100,
+  "scenario_families": [
+    "ambiguous_date",
+    "category_variant",
+    "duplicate",
+    "invalid_numeric",
+    "missing",
+    "mixed_numeric",
+    "numeric_identifier",
+    "outlier",
+    "sentinel",
+    "whitespace"
+  ],
+  "duration_seconds": 2.3994,
+  "mean_exact_accuracy": {
+    "noop_exact_accuracy": 0.995833,
+    "baseline_exact_accuracy": 1.0,
+    "agent_exact_accuracy": 1.0
+  },
+  "human_review_cases": 10,
+  "failed_runs": 0,
+  "average_operations": 0.1,
+  "planner_model": null,
+  "token_usage": null,
+  "generated_at": "2026-10-09T11:09:50.454739+00:00",
+  "case_results": [
+    {
+      "case_id": "case-0000",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0001",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0002",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0003",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0004",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0005",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0006",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0007",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0008",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0009",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0010",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0011",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0012",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0013",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0014",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0015",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0016",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0017",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0018",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0019",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0020",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0021",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0022",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0023",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0024",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0025",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0026",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0027",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0028",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0029",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0030",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0031",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0032",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0033",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0034",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0035",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0036",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0037",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0038",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0039",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0040",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0041",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0042",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0043",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0044",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0045",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0046",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0047",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0048",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0049",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0050",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0051",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0052",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0053",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0054",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0055",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0056",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0057",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0058",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0059",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0060",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0061",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0062",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0063",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0064",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0065",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0066",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0067",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0068",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0069",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0070",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0071",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0072",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0073",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0074",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0075",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0076",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0077",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0078",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0079",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0080",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0081",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0082",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0083",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0084",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0085",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0086",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0087",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0088",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0089",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0090",
+      "family": "whitespace",
+      "expected_action": "trim_whitespace",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 0.9583333333333334,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 1,
+        "correct_changes": 0,
+        "changed_cell_precision": 0.0,
+        "changed_cell_recall": 0.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 1,
+        "expected_changed_cells": 1,
+        "correct_changes": 1,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 1,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0091",
+      "family": "missing",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0092",
+      "family": "sentinel",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0093",
+      "family": "duplicate",
+      "expected_action": "preserve_and_review",
+      "agent_status": "NEEDS_REVIEW",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": true
+    },
+    {
+      "case_id": "case-0094",
+      "family": "ambiguous_date",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0095",
+      "family": "category_variant",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0096",
+      "family": "mixed_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0097",
+      "family": "numeric_identifier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0098",
+      "family": "outlier",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    },
+    {
+      "case_id": "case-0099",
+      "family": "invalid_numeric",
+      "expected_action": "preserve_and_review",
+      "agent_status": "READY_TO_FINALIZE",
+      "noop_exact_accuracy": 1.0,
+      "baseline_exact_accuracy": 1.0,
+      "agent_exact_accuracy": 1.0,
+      "noop_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "baseline_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_changes": {
+        "changed_cells": 0,
+        "expected_changed_cells": 0,
+        "correct_changes": 0,
+        "changed_cell_precision": 1.0,
+        "changed_cell_recall": 1.0,
+        "incorrect_change_rate": 0.0
+      },
+      "agent_operations": 0,
+      "review_required": false
+    }
+  ]
+}

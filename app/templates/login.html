@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Sign in · PrepPilot{% endblock %}
+{% block content %}
+<div class="row justify-content-center py-5">
+  <div class="col-sm-10 col-md-6 col-lg-4">
+    <section class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h3">Sign in to PrepPilot</h1>
+        <p class="text-secondary">Enter the access password configured for this deployment.</p>
+        <form method="post" action="{{ url_for('main.login') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label class="form-label" for="password">Access password</label>
+          <input class="form-control mb-3" id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+          <button class="btn btn-primary w-100" type="submit">Sign in</button>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

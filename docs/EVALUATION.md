@@ -1,0 +1,9 @@
+# Evaluation methodology
+
+Run `python -m app.evaluation.runner --mode deterministic` (or `--mode scripted-agent`) to generate 100 fixed-seed synthetic cases across ten scenario families. The harness compares a no-op baseline, an independently coded fixed pandas whitespace trim baseline, and the PrepPilot LangGraph evidence planner. Ground truth is explicit: whitespace corruption has a defensible trim result; ambiguous dates, sentinels, outliers, and other uncertain values are expected to remain unchanged. The benchmark must prefer safe preservation over cosmetic metric gains.
+
+Metrics include exact cell accuracy and changed-cell precision/recall/incorrect-change rate. The JSON report records each case, expected action, operations, review routing, seed, runtime, and summary. Reports are written to `data/benchmarks/latest.json` and `.md` and persisted in the configured database when the CLI is run. The UI shows saved run summaries. These synthetic cases demonstrate behavior, not broad real-world generalization. LLM mode reports `SKIPPED` unless an API key and explicit data-sharing opt-in are provided.
+
+The fixed baseline always trims outer whitespace from object/string columns. It has no planner, policies, review routing, validation feedback, or retry decisions. It is intentionally static and does not gain the agent's dynamic behavior. `--mode llm` calls the hosted adapter only when `OPENAI_API_KEY` and `PREPPILOT_ALLOW_DATA_TO_LLM=1` are both present; otherwise the report records a skipped run. Only aggregate profile information is transmitted, and the provider/model and available token usage are stored with the report.
+
+The checked-in deterministic run used 100 cases and seed 4242. Mean exact cell accuracy was 0.995833 for no-op, 1.0 for the fixed trim baseline, and 1.0 for the evidence planner. These scores describe the controlled synthetic set only.
