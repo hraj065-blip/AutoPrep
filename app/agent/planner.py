@@ -28,7 +28,7 @@ class EvidencePlanner:
                     operation_type="trim_whitespace", target_columns=[col["name"]],
                     reason="Remove observed leading/trailing whitespace while preserving non-string values.",
                     evidence={"observed_count": count, "objective": objective}, confidence=0.99,
-                    risk_level=RiskLevel.LOW, requires_approval=True,
+                    risk_level=RiskLevel.LOW, requires_approval=False,
                 ))
         if profile["duplicate_full_rows"]:
             proposals.append(PreparationOperation(
@@ -71,14 +71,12 @@ class HostedPlanner:
         for item in response["operations"]:
             validated = OperationSpec.model_validate({"type": item["type"], "columns": item["columns"],
                                                        "arguments": item["arguments"]})
-            high_impact = validated.type in {"trim_whitespace", "normalize_whitespace", "drop_duplicates",
-                "drop_empty_rows", "drop_empty_columns", "drop_missing_rows", "fill_missing",
-                "normalize_categories", "parse_date", "cast_type", "replace_sentinels"}
+            requires_approval = validated.type not in {"trim_whitespace", "validate_constraint"}
             proposals.append(PreparationOperation(operation_type=validated.type,
                 target_columns=validated.columns, arguments=validated.arguments,
                 reason=str(item["reason"])[:500], evidence={"profile_issue_rules": context["profile"]["issue_rules"]},
-                risk_level=RiskLevel.HIGH if high_impact else RiskLevel.LOW,
-                requires_approval=high_impact, created_by="agent"))
+                risk_level=RiskLevel.MEDIUM if requires_approval else RiskLevel.LOW,
+                requires_approval=requires_approval, created_by="agent"))
         return proposals
 
 

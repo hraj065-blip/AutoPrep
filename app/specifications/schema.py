@@ -48,7 +48,7 @@ class PolicySpec(StrictModel):
     allow_imputation: bool = False
     allow_sentinel_replacement: bool = False
     allow_category_mapping: bool = False
-    require_approval_for: list[str] = Field(default_factory=lambda: ["row_deletion", "imputation", "placeholder_replacement", "whitespace_trimming", "ambiguous_date_parsing", "lossy_type_conversion"])
+    require_approval_for: list[str] = Field(default_factory=lambda: ["row_deletion", "imputation", "placeholder_replacement", "ambiguous_date_parsing", "lossy_type_conversion"])
 
 
 class ExecutionSpec(StrictModel):

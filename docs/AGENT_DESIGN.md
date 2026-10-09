@@ -1,6 +1,6 @@
 # Agent and workflow design
 
-The runtime graph is implemented with the documented LangGraph `StateGraph` builder and `START`/`END` routing API. Its current nodes are planner, deterministic execution, validation, and safe stop. The evidence planner uses only profile facts and sends observed whitespace trims to human review; duplicate removal is proposed for review and requires row-deletion consent plus approval. The execution registry also enforces policy and approval gates for imputation and placeholder replacement.
+The runtime graph is implemented with the documented LangGraph `StateGraph` builder and `START`/`END` routing API. Its current nodes are planner, deterministic execution, validation, and safe stop. The evidence planner uses only profile facts and automatically trims observed leading/trailing whitespace; duplicate removal is proposed for review and requires row-deletion consent plus approval. The execution registry also enforces policy and approval gates for imputation and placeholder replacement. Other consequential or ambiguous transformations remain review-gated.
 
 The operation lifecycle is deliberately distinct:
 

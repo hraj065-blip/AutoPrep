@@ -337,8 +337,7 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
     frame = candidate_frame(item)
     ops = []
     for op in spec.operations:
-        high_risk = op.type in {"trim_whitespace", "normalize_whitespace", "drop_duplicates", "drop_empty_rows",
-            "drop_missing_rows", "drop_empty_columns", "fill_missing", "replace_sentinels"}
+        requires_approval = op.type not in {"trim_whitespace", "validate_constraint"}
         evidence: dict[str, Any] = {}
         if op.type == "drop_missing_rows":
             subset = op.columns or [column for column in frame.columns if column != "_source_row_id"]
@@ -371,8 +370,8 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
             reason += f" Treat these selected placeholder markers as missing: {', '.join(op.arguments['sentinels'])}."
         ops.append(PreparationOperation(operation_type=op.type, target_columns=op.columns,
             arguments=op.arguments, reason=reason, evidence=evidence,
-            created_by="user", risk_level=RiskLevel.HIGH if high_risk else RiskLevel.LOW,
-            requires_approval=high_risk).model_dump(mode="json"))
+            created_by="user", risk_level=RiskLevel.MEDIUM if requires_approval else RiskLevel.LOW,
+            requires_approval=requires_approval).model_dump(mode="json"))
     result = run_workflow(frame, spec.objective, ScriptedPlanner(ops), max_steps,
                           max_operations=spec.execution.max_operations,
                           policies=spec.policies.model_dump())

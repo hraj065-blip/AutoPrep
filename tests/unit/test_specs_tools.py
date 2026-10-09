@@ -43,13 +43,11 @@ def test_transition_rejects_illegal_job_state():
 def test_safe_operation_copy_and_invalid_argument_rejected():
     frame = pd.DataFrame({"name": [" Alice "]})
     spec = {"type": "trim_whitespace", "columns": ["name"], "arguments": {}}
-    with pytest.raises(ValueError, match="approval"):
-        execute_safely(frame, spec)
-    output = execute_safely(frame, spec, approved=True)
+    output = execute_safely(frame, spec)
     assert output.iloc[0, 0] == "Alice"
     assert frame.iloc[0, 0] == " Alice "
     with pytest.raises(ValueError, match="Unknown target columns"):
-        execute_safely(frame, {"type": "trim_whitespace", "columns": ["missing"], "arguments": {}}, approved=True)
+        execute_safely(frame, {"type": "trim_whitespace", "columns": ["missing"], "arguments": {}})
 
 
 def test_row_deletion_requires_policy_and_approval():
@@ -61,6 +59,15 @@ def test_row_deletion_requires_policy_and_approval():
         execute_safely(frame, spec, policies={"allow_row_deletion": True})
     output = execute_safely(frame, spec, policies={"allow_row_deletion": True}, approved=True)
     assert len(output) == 1
+
+
+def test_other_transformations_require_human_approval():
+    frame = pd.DataFrame({"name": ["ADA"]})
+    spec = {"type": "normalize_case", "columns": ["name"], "arguments": {"mode": "lower"}}
+    with pytest.raises(ValueError, match="approval"):
+        execute_safely(frame, spec)
+    output = execute_safely(frame, spec, approved=True)
+    assert output.loc[0, "name"] == "ada"
 
 
 def test_imputation_requires_policy_and_human_approval():

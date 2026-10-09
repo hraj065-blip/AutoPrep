@@ -80,7 +80,7 @@ def profile_dataset(frame: pd.DataFrame) -> dict[str, Any]:
             issues.append(ValidationIssue(rule_id="outer_whitespace", severity=IssueSeverity.INFO,
                 category="formatting", message=f"{whitespace} values contain leading or trailing whitespace.",
                 affected_columns=[str(name)], affected_count=whitespace,
-                suggested_resolution="Trim whitespace after review.").model_dump(mode="json"))
+                suggested_resolution="Trim leading/trailing whitespace automatically.").model_dump(mode="json"))
         if sentinels:
             issues.append(ValidationIssue(rule_id="sentinel_candidates", severity=IssueSeverity.WARNING,
                 category="missingness", message="Possible placeholder values require interpretation.",

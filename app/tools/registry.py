@@ -10,7 +10,12 @@ from app.specifications.schema import OperationSpec
 
 DESTRUCTIVE_ROW_TOOLS = {"drop_duplicates", "drop_empty_rows", "drop_missing_rows"}
 DESTRUCTIVE_COLUMN_TOOLS = {"drop_empty_columns"}
-APPROVAL_REQUIRED_TOOLS = {"trim_whitespace", "normalize_whitespace", "fill_missing", "replace_sentinels"}
+REVIEW_REQUIRED_TOOLS = {
+    "normalize_whitespace", "normalize_case", "parse_numeric", "parse_date",
+    "rename_columns", "normalize_column_names", "drop_duplicates", "drop_empty_rows",
+    "drop_missing_rows", "drop_empty_columns", "fill_missing", "normalize_categories",
+    "replace_sentinels", "cast_type",
+}
 
 
 def execute_operation(frame: pd.DataFrame, raw_spec: dict[str, Any]) -> pd.DataFrame:
@@ -186,7 +191,7 @@ def execute_safely(frame: pd.DataFrame, raw_spec: dict[str, Any], *,
             raise ValueError("Column deletion is prohibited by the active preparation policy")
         if spec.type in DESTRUCTIVE_ROW_TOOLS | DESTRUCTIVE_COLUMN_TOOLS and not approved:
             raise ValueError("This operation requires explicit human approval")
-        if spec.type in APPROVAL_REQUIRED_TOOLS and not approved:
+        if spec.type in REVIEW_REQUIRED_TOOLS and not approved:
             raise ValueError("This operation requires explicit human approval")
         if spec.type == "normalize_categories" and not policies.get("allow_category_mapping", False):
             raise ValueError("Category mapping is prohibited by the active policy")

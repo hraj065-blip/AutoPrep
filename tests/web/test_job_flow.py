@@ -21,14 +21,9 @@ def test_upload_profile_review_and_download(app, client):
     page = client.get(job_path)
     assert page.status_code == 200
     assert b"Quality profile" in page.data
-    assert b"NEEDS_REVIEW" in page.data
+    assert b"READY_TO_FINALIZE" in page.data
     job_id = job_path.rstrip("/").split("/")[-1]
     job = get_job(app.config["DATABASE_URL"] or app.config["DATABASE_PATH"], job_id)
-    review = next(item for item in job["reviews"] if item["status"] == "OPEN")
-    approved = client.post(f"{job_path}/reviews/{review['review_id']}", data={
-        "csrf_token": token, "decision": "APPROVE", "reason": "Trim reviewed whitespace"
-    }, follow_redirects=True)
-    assert b"READY_TO_FINALIZE" in approved.data
     finalized = client.post(job_path + "/finalize", data={"csrf_token": token}, follow_redirects=True)
     assert b"Download cleaned CSV" in finalized.data
     download = client.get(job_path + "/download/cleaned")
