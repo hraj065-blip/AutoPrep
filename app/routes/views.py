@@ -125,7 +125,8 @@ def review(job_id: str, review_id: str):
             request.form.get("reason", ""), current_app.config["MAX_ROWS"], current_app.config["MAX_COLUMNS"],
             current_app.config["MAX_AGENT_STEPS"], request.form.get("arguments_json"), request.form.get("columns_json"),
             allow_row_deletion=request.form.get("allow_row_deletion") == "yes",
-            allow_imputation=request.form.get("allow_imputation") == "yes")
+            allow_imputation=request.form.get("allow_imputation") == "yes",
+            allow_sentinel_replacement=request.form.get("allow_sentinel_replacement") == "yes")
         flash(f"Review recorded. Job status: {job['payload']['status']}.", "success")
     except (ValueError, KeyError) as exc:
         flash(str(exc), "error")

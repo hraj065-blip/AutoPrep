@@ -42,11 +42,14 @@ def test_transition_rejects_illegal_job_state():
 
 def test_safe_operation_copy_and_invalid_argument_rejected():
     frame = pd.DataFrame({"name": [" Alice "]})
-    output = execute_safely(frame, {"type": "trim_whitespace", "columns": ["name"], "arguments": {}})
+    spec = {"type": "trim_whitespace", "columns": ["name"], "arguments": {}}
+    with pytest.raises(ValueError, match="approval"):
+        execute_safely(frame, spec)
+    output = execute_safely(frame, spec, approved=True)
     assert output.iloc[0, 0] == "Alice"
     assert frame.iloc[0, 0] == " Alice "
     with pytest.raises(ValueError, match="Unknown target columns"):
-        execute_safely(frame, {"type": "trim_whitespace", "columns": ["missing"], "arguments": {}})
+        execute_safely(frame, {"type": "trim_whitespace", "columns": ["missing"], "arguments": {}}, approved=True)
 
 
 def test_row_deletion_requires_policy_and_approval():
@@ -58,3 +61,26 @@ def test_row_deletion_requires_policy_and_approval():
         execute_safely(frame, spec, policies={"allow_row_deletion": True})
     output = execute_safely(frame, spec, policies={"allow_row_deletion": True}, approved=True)
     assert len(output) == 1
+
+
+def test_imputation_requires_policy_and_human_approval():
+    frame = pd.DataFrame({"amount": ["2", None, "4"]})
+    spec = {"type": "fill_missing", "columns": ["amount"], "arguments": {"method": "mean"}}
+    with pytest.raises(ValueError, match="approval"):
+        execute_safely(frame, spec, policies={"allow_imputation": True})
+    with pytest.raises(ValueError, match="prohibited"):
+        execute_safely(frame, spec, approved=True)
+    output = execute_safely(frame, spec, policies={"allow_imputation": True}, approved=True)
+    assert float(output.loc[1, "amount"]) == 3.0
+
+
+def test_placeholder_replacement_requires_policy_and_human_approval():
+    frame = pd.DataFrame({"city": ["unknown", "Boston"]})
+    spec = {"type": "replace_sentinels", "columns": ["city"], "arguments": {"values": ["unknown"]}}
+    with pytest.raises(ValueError, match="approval"):
+        execute_safely(frame, spec, policies={"allow_sentinel_replacement": True})
+    with pytest.raises(ValueError, match="prohibited"):
+        execute_safely(frame, spec, approved=True)
+    output = execute_safely(frame, spec, policies={"allow_sentinel_replacement": True}, approved=True)
+    assert pd.isna(output.loc[0, "city"])
+    assert frame.loc[0, "city"] == "unknown"

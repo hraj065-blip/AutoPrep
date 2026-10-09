@@ -19,7 +19,7 @@ def test_hosted_planner_sends_profile_without_cell_examples():
     frame = pd.DataFrame({"customer": [" Alice "]})
     operations = planner.propose(frame, "prepare")
     assert len(operations) == 1
-    assert operations[0].requires_approval is False
+    assert operations[0].requires_approval is True
     assert "examples" not in str(client.context)
     assert "Alice" not in json.dumps(client.context)
 

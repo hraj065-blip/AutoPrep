@@ -87,7 +87,8 @@ def create_job(database: str, raw: bytes, filename: str, objective: str, sheet: 
             review = ReviewItem(job_id=job["job_id"], issue_type=operation["operation_type"],
                 question=f"Approve operation: {operation['reason']}", candidate_values=[],
                 supporting_evidence=operation.get("evidence", {}),
-                affected_count=int(operation.get("evidence", {}).get("duplicate_count", 0)),
+                affected_count=int(operation.get("evidence", {}).get("duplicate_count",
+                    operation.get("evidence", {}).get("observed_count", 0))),
                 proposed_resolution=operation, risk_level=RiskLevel(operation["risk_level"])).model_dump(mode="json")
             reviews.append(review)
     status = (JobStatus.FAILED if result.get("status") in {"SAFE_STOP", "FAILED"} else
@@ -139,7 +140,8 @@ def candidate_frame(job: dict[str, Any]) -> pd.DataFrame:
 def decide_review(database: str, job_id: str, review_id: str, decision: str,
                   reason: str, max_rows: int, max_columns: int, max_agent_steps: int = 5,
                   arguments_json: str | None = None, columns_json: str | None = None,
-                  allow_row_deletion: bool = False, allow_imputation: bool = False) -> dict[str, Any]:
+                  allow_row_deletion: bool = False, allow_imputation: bool = False,
+                  allow_sentinel_replacement: bool = False) -> dict[str, Any]:
     item = get_job(database, job_id)
     if not item:
         raise KeyError("Job not found")
@@ -176,10 +178,13 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
         policies = dict(item["payload"].get("metadata", {}).get("policies", {}))
         row_deletion_authorized = operation["operation_type"] in {"drop_duplicates", "drop_empty_rows", "drop_missing_rows"} and allow_row_deletion
         imputation_authorized = operation["operation_type"] == "fill_missing" and allow_imputation
+        sentinel_replacement_authorized = operation["operation_type"] == "replace_sentinels" and allow_sentinel_replacement
         if row_deletion_authorized:
             policies["allow_row_deletion"] = True
         if imputation_authorized:
             policies["allow_imputation"] = True
+        if sentinel_replacement_authorized:
+            policies["allow_sentinel_replacement"] = True
         candidate = execute_safely(frame, tool,
             policies=policies, approved=True)
         validate_frame(candidate.drop(columns=["_source_row_id"], errors="ignore"), max_rows, max_columns)
@@ -207,7 +212,7 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
         operation["output_version"] = operation["input_version"] + 1
         operations = [operation if op.get("operation_id") == operation["operation_id"] else op for op in operations]
         db.update_job(database, job_id, candidate=_df_bytes(candidate))
-        if row_deletion_authorized or imputation_authorized:
+        if row_deletion_authorized or imputation_authorized or sentinel_replacement_authorized:
             item["payload"].setdefault("metadata", {})["policies"] = policies
         db.store_dataset_version(database, job_id, operation["output_version"],
                                  _df_bytes(candidate), operation["operation_id"])
@@ -231,7 +236,10 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
                 and item["payload"].get("metadata", {}).get("policies", {}).get("allow_row_deletion", False)),
             "imputation_authorized": bool(decision_enum in {ReviewDecision.APPROVE, ReviewDecision.EDIT}
                 and operation["operation_type"] == "fill_missing"
-                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_imputation", False))}))
+                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_imputation", False)),
+            "sentinel_replacement_authorized": bool(decision_enum in {ReviewDecision.APPROVE, ReviewDecision.EDIT}
+                and operation["operation_type"] == "replace_sentinels"
+                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_sentinel_replacement", False))}))
     if decision_enum == ReviewDecision.APPROVE and not open_reviews:
         from app.agent.planner import EvidencePlanner
         resumed = run_workflow(candidate, item["payload"]["objective"], EvidencePlanner(),
@@ -329,7 +337,8 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
     frame = candidate_frame(item)
     ops = []
     for op in spec.operations:
-        high_risk = op.type in {"drop_duplicates", "drop_empty_rows", "drop_missing_rows", "drop_empty_columns", "fill_missing"}
+        high_risk = op.type in {"trim_whitespace", "normalize_whitespace", "drop_duplicates", "drop_empty_rows",
+            "drop_missing_rows", "drop_empty_columns", "fill_missing", "replace_sentinels"}
         evidence: dict[str, Any] = {}
         if op.type == "drop_missing_rows":
             subset = op.columns or [column for column in frame.columns if column != "_source_row_id"]
@@ -348,11 +357,16 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
                     normalized = frame[column].map(lambda value: str(value).strip().casefold() if pd.notna(value) else "")
                     missing[column] |= normalized.isin(sentinels)
             evidence["missing_values_count"] = int(missing.sum().sum())
+        elif op.type == "replace_sentinels":
+            sentinels = set(op.arguments.get("values", []))
+            evidence["placeholder_count"] = int(sum(frame[column].isin(sentinels).sum() for column in op.columns))
         reason = "Explicit operation from user supplied YAML specification."
         if op.type == "fill_missing":
             reason = f"Fill missing values in {', '.join(op.columns)} using {op.arguments.get('method', 'an explicit value')} and review the result."
         elif op.type == "drop_missing_rows":
             reason = f"Remove rows with missing values in {', '.join(op.columns)} and review the resulting row count."
+        elif op.type == "replace_sentinels":
+            reason = f"Replace selected placeholder values in {', '.join(op.columns)} with missing values, then review the result."
         if op.arguments.get("sentinels"):
             reason += f" Treat these selected placeholder markers as missing: {', '.join(op.arguments['sentinels'])}."
         ops.append(PreparationOperation(operation_type=op.type, target_columns=op.columns,
@@ -371,7 +385,8 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
                 supporting_evidence=operation.get("evidence", {}),
                 affected_count=operation.get("evidence", {}).get("duplicate_count",
                     operation.get("evidence", {}).get("missing_row_count",
-                    operation.get("evidence", {}).get("missing_values_count", 0))),
+                    operation.get("evidence", {}).get("missing_values_count",
+                    operation.get("evidence", {}).get("placeholder_count", 0)))),
                 proposed_resolution=operation, risk_level=RiskLevel.HIGH).model_dump(mode="json"))
     item["payload"]["objective"] = spec.objective
     item["payload"]["specification_version"] = spec.version
@@ -380,7 +395,7 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
     declared_policies = spec.policies.model_dump(mode="json")
     item["payload"]["metadata"]["policies"] = {
         key: bool(prior_policies.get(key, False) or declared_policies.get(key, False))
-        if key in {"allow_row_deletion", "allow_imputation"} else value
+        if key in {"allow_row_deletion", "allow_imputation", "allow_sentinel_replacement"} else value
         for key, value in declared_policies.items()}
     item["payload"]["metadata"]["execution"] = spec.execution.model_dump(mode="json")
     spec_status = (JobStatus.FAILED if result.get("status") in {"SAFE_STOP", "FAILED"} else

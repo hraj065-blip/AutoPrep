@@ -10,6 +10,7 @@ from app.specifications.schema import OperationSpec
 
 DESTRUCTIVE_ROW_TOOLS = {"drop_duplicates", "drop_empty_rows", "drop_missing_rows"}
 DESTRUCTIVE_COLUMN_TOOLS = {"drop_empty_columns"}
+APPROVAL_REQUIRED_TOOLS = {"trim_whitespace", "normalize_whitespace", "fill_missing", "replace_sentinels"}
 
 
 def execute_operation(frame: pd.DataFrame, raw_spec: dict[str, Any]) -> pd.DataFrame:
@@ -185,10 +186,14 @@ def execute_safely(frame: pd.DataFrame, raw_spec: dict[str, Any], *,
             raise ValueError("Column deletion is prohibited by the active preparation policy")
         if spec.type in DESTRUCTIVE_ROW_TOOLS | DESTRUCTIVE_COLUMN_TOOLS and not approved:
             raise ValueError("This operation requires explicit human approval")
+        if spec.type in APPROVAL_REQUIRED_TOOLS and not approved:
+            raise ValueError("This operation requires explicit human approval")
         if spec.type == "normalize_categories" and not policies.get("allow_category_mapping", False):
             raise ValueError("Category mapping is prohibited by the active policy")
         if spec.type == "fill_missing" and not policies.get("allow_imputation", False):
             raise ValueError("Imputation is prohibited by the active policy")
+        if spec.type == "replace_sentinels" and not policies.get("allow_sentinel_replacement", False):
+            raise ValueError("Placeholder replacement is prohibited by the active policy")
         return execute_operation(frame, raw_spec)
     except (ValidationError, ValueError, TypeError, KeyError) as exc:
         raise ValueError(f"Operation rejected; prior dataset remains unchanged: {exc}") from exc

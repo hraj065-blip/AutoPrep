@@ -10,7 +10,7 @@ def _csrf(client):
         return session["csrf_token"]
 
 
-def test_upload_profile_review_and_download(client):
+def test_upload_profile_review_and_download(app, client):
     token = _csrf(client)
     response = client.post("/jobs", data={
         "csrf_token": token, "objective": "Prepare names",
@@ -21,7 +21,14 @@ def test_upload_profile_review_and_download(client):
     page = client.get(job_path)
     assert page.status_code == 200
     assert b"Quality profile" in page.data
-    assert b"READY_TO_FINALIZE" in page.data
+    assert b"NEEDS_REVIEW" in page.data
+    job_id = job_path.rstrip("/").split("/")[-1]
+    job = get_job(app.config["DATABASE_URL"] or app.config["DATABASE_PATH"], job_id)
+    review = next(item for item in job["reviews"] if item["status"] == "OPEN")
+    approved = client.post(f"{job_path}/reviews/{review['review_id']}", data={
+        "csrf_token": token, "decision": "APPROVE", "reason": "Trim reviewed whitespace"
+    }, follow_redirects=True)
+    assert b"READY_TO_FINALIZE" in approved.data
     finalized = client.post(job_path + "/finalize", data={"csrf_token": token}, follow_redirects=True)
     assert b"Download cleaned CSV" in finalized.data
     download = client.get(job_path + "/download/cleaned")
@@ -47,13 +54,13 @@ def test_reviewed_dedupe_replay_and_lineage(app, client):
     job = create_job(database, b"name\nAda\nAda\n", "dup.csv", "dedupe", None, 100, 20, 5)
     assert job["payload"]["status"] == "NEEDS_REVIEW"
     review = next(r for r in job["reviews"] if r["status"] == "OPEN")
-    job = apply_yaml_spec(database, job["payload"]["job_id"], '''version: "1.0"
-dataset: {objective: dedupe}
-policies:
-  allow_row_deletion: true
-operations: []
-''', 5)
-    resolved = decide_review(database, job["payload"]["job_id"], review["review_id"], "APPROVE", "exact duplicates", 100, 20)
+    import pytest
+    with pytest.raises(ValueError, match="prohibited"):
+        decide_review(database, job["payload"]["job_id"], review["review_id"], "APPROVE", "exact duplicates", 100, 20)
+    unchanged = get_job(database, job["payload"]["job_id"])
+    assert len(unchanged["candidate"].decode().splitlines()) == 3
+    resolved = decide_review(database, job["payload"]["job_id"], review["review_id"], "APPROVE",
+        "exact duplicates", 100, 20, allow_row_deletion=True)
     assert resolved["payload"]["status"] == "READY_TO_FINALIZE"
     assert len(resolved["operations"]) == 1
     assert resolved["operations"][0]["status"] == "EXECUTED"

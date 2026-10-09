@@ -5,13 +5,13 @@ from app.agent.planner import EvidencePlanner, ScriptedPlanner
 from app.domain.models import PreparationOperation
 
 
-def test_graph_executes_safe_trim_and_validates():
+def test_graph_proposes_trim_and_waits_for_human_review():
     frame = pd.DataFrame({"name": [" Ada ", "Lin"]})
     result = run_workflow(frame, "prepare", EvidencePlanner(), max_steps=5)
-    assert result["frame"]["name"].tolist() == ["Ada", "Lin"]
-    assert len(result["ledger"]) == 1
-    assert result["validation"]["passed"] is True
-    assert result["status"] == "READY_TO_FINALIZE"
+    assert result["frame"]["name"].tolist() == [" Ada ", "Lin"]
+    assert not result["ledger"]
+    assert result["status"] == "NEEDS_REVIEW"
+    assert result["review_required"] is True
 
 
 def test_graph_routes_destructive_operation_to_review():

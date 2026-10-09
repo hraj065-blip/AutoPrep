@@ -46,8 +46,9 @@ class PolicySpec(StrictModel):
     allow_row_deletion: bool = False
     allow_column_deletion: bool = False
     allow_imputation: bool = False
+    allow_sentinel_replacement: bool = False
     allow_category_mapping: bool = False
-    require_approval_for: list[str] = Field(default_factory=lambda: ["row_deletion", "imputation", "ambiguous_date_parsing", "lossy_type_conversion"])
+    require_approval_for: list[str] = Field(default_factory=lambda: ["row_deletion", "imputation", "placeholder_replacement", "whitespace_trimming", "ambiguous_date_parsing", "lossy_type_conversion"])
 
 
 class ExecutionSpec(StrictModel):
@@ -96,6 +97,9 @@ class OperationSpec(StrictModel):
         if "sentinels" in self.arguments and (not isinstance(self.arguments["sentinels"], list)
                 or not all(isinstance(value, str) for value in self.arguments["sentinels"])):
             raise ValueError("sentinels must be a list of strings")
+        if self.type == "replace_sentinels" and (not self.arguments.get("values")
+                or not all(isinstance(value, str) for value in self.arguments["values"])):
+            raise ValueError("replace_sentinels requires a non-empty list of text values")
         if self.type == "parse_numeric":
             decimal = self.arguments.get("decimal", ".")
             thousands = self.arguments.get("thousands", ",")

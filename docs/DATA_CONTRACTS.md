@@ -29,6 +29,7 @@ policies:
   preserve_source: true
   allow_row_deletion: false
   allow_imputation: false
+  allow_sentinel_replacement: false
 operations:
   - type: trim_whitespace
     columns: [transaction_id]
@@ -40,4 +41,4 @@ execution:
   require_user_final_approval: true
 ```
 
-Supported operations are enumerated by `OperationSpec`; per-tool arguments are allowlisted. YAML cannot contain Python expressions. `drop_duplicates` and other row deletion require both an enabling policy and a human approval. Imputation and category mapping also require explicit policy permission.
+Supported operations are enumerated by `OperationSpec`; per-tool arguments are allowlisted. YAML cannot contain Python expressions. `drop_duplicates`, `drop_empty_rows`, and `drop_missing_rows` require both an enabling policy and a human approval. Whitespace trimming, imputation, and standalone placeholder replacement are proposed for human review; imputation and placeholder replacement also require explicit policy permission. Sentinel markers included in a reviewed imputation or missing-row-removal operation are covered by that operation's corresponding policy and approval.
