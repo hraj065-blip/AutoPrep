@@ -15,7 +15,7 @@ def create_app(config_object: type[Config] = Config) -> Flask:
     app.config.from_object(config_object)
     app.config.from_pyfile("config.py", silent=True)
     if os.environ.get("VERCEL"):
-        required = ["SECRET_KEY", "PREPPILOT_ACCESS_PASSWORD", "DATABASE_URL"]
+        required = ["SECRET_KEY", "DATABASE_URL"]
         missing = [key for key in required if not os.environ.get(key)]
         if missing:
             raise RuntimeError("Missing required Vercel environment variables: " + ", ".join(missing))

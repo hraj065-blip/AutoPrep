@@ -85,10 +85,9 @@ In Vercel, import the GitHub repository and connect a PostgreSQL integration tha
 
 - `DATABASE_URL`: pooled PostgreSQL connection string.
 - `SECRET_KEY`: a long random secret used to sign sessions.
-- `PREPPILOT_ACCESS_PASSWORD`: a strong shared password for the demo.
 - Optional hosted planning: set `PREPPILOT_PLANNER=groq`, `GROQ_API_KEY`, and `PREPPILOT_ALLOW_DATA_TO_LLM=1` for Groq, or set `PREPPILOT_PLANNER=openai`, `OPENAI_API_KEY`, and the same consent flag for OpenAI. Groq defaults to model `openai/gpt-oss-20b` and endpoint `https://api.groq.com/openai/v1`.
 
-Vercel's function request and response body limit is 4.5 MB; PrepPilot defaults to a conservative 2 MB upload limit on Vercel and 25 MB locally to leave room for multipart overhead and exports. The password gate protects a shared workspace, but it is not per-user authentication: every signed-in visitor can see the same jobs. Do not use sensitive data or treat this demo as a production multi-tenant service.
+Vercel's function request and response body limit is 4.5 MB; PrepPilot defaults to a conservative 2 MB upload limit on Vercel and 25 MB locally to leave room for multipart overhead and exports. No login is required, and all visitors share the same workspace. Do not use sensitive data or treat this demo as a production multi-tenant service.
 
 Each push to the connected production branch triggers a new Vercel deployment. Configure environment variables separately for Preview and Production if you use both.
 
@@ -111,7 +110,7 @@ The harness creates 100 reproducible cases across ten controlled scenario famili
 - Local development uses SQLite; Vercel uses PostgreSQL. Both store source bytes and candidate snapshots in the database, suitable for small demos rather than large-scale ingestion.
 - Validation supports the documented schema and simple rules; complex cross-column business constraints are not implemented.
 - Cell provenance records hashes and operation links, not a complete raw before-value history. Generated rows and multi-source joins are not supported.
-- Vercel can enable a shared access-password gate, but there are no individual accounts or per-user data isolation. Local development has no login by default.
+- No login is required locally or on Vercel; there are no individual accounts or per-user data isolation, so visitors share one workspace.
 - XLSX output currently contains the cleaned dataset in one sheet; multi-sheet artifact preservation is not implemented.
 
 ## Demo

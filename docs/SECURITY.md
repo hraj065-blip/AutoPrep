@@ -8,7 +8,7 @@
 - Candidate operations use copies. High-impact row or column deletion is blocked by default policy and requires explicit policy plus review.
 - CSV/XLSX export prefixes formula-triggering string values (`=`, `+`, `-`, `@`, tab, carriage return) with an apostrophe. This is an export-only safety transformation; the source and candidate snapshots are unchanged.
 - Logs contain job/operation IDs and events, not complete datasets. The optional hosted planner sends compact aggregate profiles only when an API key is configured and `PREPPILOT_ALLOW_DATA_TO_LLM=1` is explicitly enabled.
-- Local development has no login and should stay bound to localhost. Vercel requires a shared access password and stable session secret, but it does not implement accounts or per-user authorization; all authenticated visitors share the same workspace. Do not use sensitive datasets or multi-tenant production workloads.
+- The app has no login or per-user authorization locally or on Vercel; all visitors share the same workspace. Configure a stable `SECRET_KEY` for signed CSRF sessions. Use only non-sensitive demo datasets and do not treat this as a multi-tenant production service.
 - Vercel deployments require PostgreSQL because function filesystems are read-only and temporary storage is not durable. The app defaults to 2 MB uploads on Vercel to stay below the 4.5 MB function request/response limit with overhead; source, candidate, and artifact bytes are stored in PostgreSQL, suitable only for small portfolio datasets.
 
 The project is a local portfolio application and does not claim regulatory compliance or production security certification.

@@ -9,7 +9,6 @@ class Config:
     INSTANCE_PATH = Path(os.environ.get("PREPPILOT_INSTANCE_PATH", "instance"))
     DATABASE_PATH = os.environ.get("PREPPILOT_DATABASE_PATH", str(INSTANCE_PATH / "preppilot.sqlite3"))
     DATABASE_URL = os.environ.get("DATABASE_URL", "")
-    ACCESS_PASSWORD = os.environ.get("PREPPILOT_ACCESS_PASSWORD", "")
     SOURCE_PATH = str(INSTANCE_PATH / "sources")
     ARTIFACT_PATH = str(INSTANCE_PATH / "artifacts")
     # Vercel Functions reject request bodies above 4.5 MB before Flask handles them.

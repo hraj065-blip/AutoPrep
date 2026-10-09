@@ -4,7 +4,6 @@ import io
 import json
 import zipfile
 import secrets
-import hmac
 
 import pandas as pd
 
@@ -33,40 +32,14 @@ def verify_csrf():
             abort(400, "Invalid form token")
 
 
-@bp.before_request
-def require_login():
-    if not current_app.config.get("ACCESS_PASSWORD"):
-        return None
-    if request.endpoint in {"main.login", "main.css_asset", "static"}:
-        return None
-    if not session.get("authenticated"):
-        return redirect(url_for("main.login", next=request.path))
-    return None
-
-
 def _database() -> str:
     return current_app.config.get("DATABASE_URL") or current_app.config["DATABASE_PATH"]
 
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
-    if not current_app.config.get("ACCESS_PASSWORD"):
-        return redirect(url_for("main.index"))
-    if request.method == "POST":
-        supplied = request.form.get("password", "")
-        if hmac.compare_digest(supplied, current_app.config["ACCESS_PASSWORD"]):
-            session.clear()
-            session["authenticated"] = True
-            session.permanent = True
-            return redirect(url_for("main.index"))
-        flash("Incorrect password.", "error")
-    return render_template("login.html")
-
-
-@bp.post("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("main.login"))
+    # Keep old bookmarks and deployment links working without showing a login screen.
+    return redirect(url_for("main.index"))
 
 
 @bp.get("/css/<path:filename>")
