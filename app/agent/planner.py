@@ -7,7 +7,7 @@ import pandas as pd
 from app.domain.models import PreparationOperation, RiskLevel
 from app.profiling.profiler import profile_dataset
 from app.specifications.schema import OperationSpec
-from app.agent.llm_client import OpenAIPlannerClient, PlannerProviderError
+from app.agent.llm_client import GroqPlannerClient, OpenAIPlannerClient, PlannerProviderError, ResponsesAPIPlannerClient
 
 
 class Planner(Protocol):
@@ -50,7 +50,7 @@ class ScriptedPlanner:
 
 
 class HostedPlanner:
-    def __init__(self, client: OpenAIPlannerClient, *, policies: dict | None = None):
+    def __init__(self, client: ResponsesAPIPlannerClient, *, policies: dict | None = None):
         self.client = client
         self.policies = policies or {"allow_row_deletion": False, "allow_imputation": False,
                                      "allow_sentinel_replacement": False, "allow_category_mapping": False}
@@ -80,14 +80,14 @@ class HostedPlanner:
         return proposals
 
 
-def configured_planner() -> tuple[Planner, OpenAIPlannerClient | None]:
+def configured_planner() -> tuple[Planner, ResponsesAPIPlannerClient | None]:
     import os
     mode = os.environ.get("PREPPILOT_PLANNER", "scripted").lower()
     if mode == "scripted":
         return EvidencePlanner(), None
-    if mode != "openai":
-        raise PlannerProviderError(f"Unsupported PREPPILOT_PLANNER value: {mode!r}.")
+    if mode not in {"openai", "groq"}:
+        raise PlannerProviderError(f"Unsupported PREPPILOT_PLANNER value: {mode!r}. Choose scripted, openai, or groq.")
     if os.environ.get("PREPPILOT_ALLOW_DATA_TO_LLM", "0").lower() not in {"1", "true", "yes"}:
-        raise PlannerProviderError("Set PREPPILOT_ALLOW_DATA_TO_LLM=1 to explicitly permit sharing aggregate profiles with OpenAI.")
-    client = OpenAIPlannerClient()
+        raise PlannerProviderError(f"Set PREPPILOT_ALLOW_DATA_TO_LLM=1 to explicitly permit sharing aggregate profiles with {mode.title()}.")
+    client = GroqPlannerClient() if mode == "groq" else OpenAIPlannerClient()
     return HostedPlanner(client), client

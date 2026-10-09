@@ -19,15 +19,13 @@ def run(mode: str = "deterministic", count: int = 100, seed: int = 4242) -> dict
     planner = EvidencePlanner()
     hosted_client = None
     if mode == "llm":
-        if not os.environ.get("OPENAI_API_KEY"):
-            return {"mode": "llm", "status": "SKIPPED", "reason": "OPENAI_API_KEY is not configured; no LLM cases were run.", "cases": 0}
         if os.environ.get("PREPPILOT_ALLOW_DATA_TO_LLM", "0").lower() not in {"1", "true", "yes"}:
             return {"mode": "llm", "status": "SKIPPED", "reason": "PREPPILOT_ALLOW_DATA_TO_LLM is not enabled; no profile data was sent.", "cases": 0}
         try:
-            from app.agent.llm_client import OpenAIPlannerClient
-            from app.agent.planner import HostedPlanner
-            hosted_client = OpenAIPlannerClient()
-            planner = HostedPlanner(hosted_client)
+            from app.agent.planner import configured_planner
+            planner, hosted_client = configured_planner()
+            if hosted_client is None:
+                return {"mode": "llm", "status": "SKIPPED", "reason": "Set PREPPILOT_PLANNER to groq or openai to run hosted LLM cases.", "cases": 0}
         except Exception as exc:
             return {"mode": "llm", "status": "FAILED", "reason": str(exc), "cases": 0}
     cases = generate_cases(count=count, seed=seed)

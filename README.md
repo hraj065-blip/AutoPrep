@@ -56,7 +56,7 @@ python -m app.evaluation.runner --mode scripted-agent
 python -m app.evaluation.runner --mode llm
 ```
 
-LLM mode reports a skipped run unless `OPENAI_API_KEY` is set and you explicitly enable `PREPPILOT_ALLOW_DATA_TO_LLM=1` (and run the command yourself). The optional OpenAI Responses adapter sends a compact profile without cell examples; it never uploads the source file. Provider usage can incur charges independent of a ChatGPT subscription. The offline planner and tests require no network or API key.
+LLM mode reports a skipped run unless `PREPPILOT_PLANNER` is set to `openai` or `groq`, the matching provider key is configured, and you explicitly enable `PREPPILOT_ALLOW_DATA_TO_LLM=1`. The Responses API adapter sends a compact profile without cell examples; it never uploads the source file. Groq supports a limited free plan; check its current limits before deploying. The offline planner and tests require no network or API key.
 
 Replay a completed job:
 
@@ -86,7 +86,7 @@ In Vercel, import the GitHub repository and connect a PostgreSQL integration tha
 - `DATABASE_URL`: pooled PostgreSQL connection string.
 - `SECRET_KEY`: a long random secret used to sign sessions.
 - `PREPPILOT_ACCESS_PASSWORD`: a strong shared password for the demo.
-- Optional: `OPENAI_API_KEY` and `PREPPILOT_ALLOW_DATA_TO_LLM=1` only if you intend to enable hosted planning and accept sending aggregate profile data to the provider.
+- Optional hosted planning: set `PREPPILOT_PLANNER=groq`, `GROQ_API_KEY`, and `PREPPILOT_ALLOW_DATA_TO_LLM=1` for Groq, or set `PREPPILOT_PLANNER=openai`, `OPENAI_API_KEY`, and the same consent flag for OpenAI. Groq defaults to model `openai/gpt-oss-20b` and endpoint `https://api.groq.com/openai/v1`.
 
 Vercel's function request and response body limit is 4.5 MB; PrepPilot defaults to a conservative 2 MB upload limit on Vercel and 25 MB locally to leave room for multipart overhead and exports. The password gate protects a shared workspace, but it is not per-user authentication: every signed-in visitor can see the same jobs. Do not use sensitive data or treat this demo as a production multi-tenant service.
 
@@ -106,7 +106,7 @@ The harness creates 100 reproducible cases across ten controlled scenario famili
 
 ## Known limitations
 
-- The default planner is offline. The optional OpenAI adapter requires an API key, explicit profile-sharing opt-in, and the user's own run command.
+- The default planner is offline. Hosted Groq or OpenAI planning requires the provider's API key and explicit profile-sharing opt-in.
 - LangGraph invocation is synchronous. Review decisions are persisted and applied through services, but durable LangGraph checkpoint/interrupt resume is not wired yet.
 - Local development uses SQLite; Vercel uses PostgreSQL. Both store source bytes and candidate snapshots in the database, suitable for small demos rather than large-scale ingestion.
 - Validation supports the documented schema and simple rules; complex cross-column business constraints are not implemented.

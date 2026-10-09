@@ -99,7 +99,7 @@ def create_job(database: str, raw: bytes, filename: str, objective: str, sheet: 
     job["current_candidate_version"] = len(executed_ledger)
     job["metadata"]["workflow_status"] = result.get("status")
     if hosted_client:
-        job["metadata"]["planner"] = {"provider": "openai", "model": hosted_client.model,
+        job["metadata"]["planner"] = {"provider": hosted_client.provider, "model": hosted_client.model,
                                          "usage": hosted_client.last_usage}
     if result.get("error"):
         job["metadata"]["workflow_message"] = result["error"]

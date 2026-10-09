@@ -29,16 +29,21 @@ class ScriptedPlannerClient:
         return self.scripted_plan
 
 
-class OpenAIPlannerClient:
-    """Small Responses API adapter. No files, rows, or cell examples are sent by this client."""
+class ResponsesAPIPlannerClient:
+    """OpenAI-compatible Responses API adapter; sends profiles, never file rows or cell examples."""
 
     def __init__(self, api_key: str | None = None, model: str | None = None,
-                 base_url: str | None = None, timeout: float = 25.0):
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+                 base_url: str | None = None, timeout: float = 25.0, *,
+                 provider: str = "openai", api_key_env: str = "OPENAI_API_KEY",
+                 model_env: str = "OPENAI_MODEL", base_url_env: str = "OPENAI_BASE_URL",
+                 default_model: str = "gpt-6-astra",
+                 default_base_url: str = "https://api.openai.com/v1"):
+        self.provider = provider
+        self.api_key = api_key or os.environ.get(api_key_env)
         if not self.api_key:
-            raise PlannerProviderError("PREPPILOT_PLANNER=openai requires OPENAI_API_KEY.")
-        self.model = model or os.environ.get("OPENAI_MODEL", "gpt-6-astra")
-        self.base_url = (base_url or os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")).rstrip("/")
+            raise PlannerProviderError(f"PREPPILOT_PLANNER={provider} requires {api_key_env}.")
+        self.model = model or os.environ.get(model_env, default_model)
+        self.base_url = (base_url or os.environ.get(base_url_env, default_base_url)).rstrip("/")
         self.timeout = timeout
         self.last_usage: dict[str, Any] = {}
 
@@ -64,7 +69,7 @@ class OpenAIPlannerClient:
                 with urlopen(request, timeout=self.timeout) as response:
                     result = json.loads(response.read().decode("utf-8"))
                 if result.get("status") != "completed":
-                    raise PlannerProviderError(f"OpenAI response was not completed: {result.get('status', 'unknown')}.")
+                    raise PlannerProviderError(f"{self.provider.title()} response was not completed: {result.get('status', 'unknown')}.")
                 usage = result.get("usage", {})
                 self.last_usage = {key: int(self.last_usage.get(key, 0)) + int(value)
                     for key, value in usage.items() if isinstance(value, (int, float))}
@@ -77,16 +82,16 @@ class OpenAIPlannerClient:
                                     text = block.get("text")
                                     break
                 if not text:
-                    raise PlannerProviderError("OpenAI returned no structured planner output.")
+                    raise PlannerProviderError(f"{self.provider.title()} returned no structured planner output.")
                 parsed = json.loads(text)
                 if not isinstance(parsed, dict) or not isinstance(parsed.get("operations"), list):
-                    raise PlannerProviderError("OpenAI planner output did not match the expected structure.")
+                    raise PlannerProviderError(f"{self.provider.title()} planner output did not match the expected structure.")
                 for operation in parsed["operations"]:
                     if isinstance(operation.get("arguments"), str):
                         operation["arguments"] = json.loads(operation["arguments"])
                 return parsed
             except HTTPError as exc:
-                last_error = PlannerProviderError(f"OpenAI provider returned HTTP {exc.code}.")
+                last_error = PlannerProviderError(f"{self.provider.title()} provider returned HTTP {exc.code}.")
                 if exc.code < 500 or attempt == 1:
                     break
             except (URLError, TimeoutError, json.JSONDecodeError) as exc:
@@ -95,7 +100,21 @@ class OpenAIPlannerClient:
                     break
             if attempt == 0:
                 time.sleep(0.25)
-        raise PlannerProviderError(f"OpenAI planner request failed: {last_error}") from last_error
+        raise PlannerProviderError(f"{self.provider.title()} planner request failed: {last_error}") from last_error
 
     def choose_next_action(self, context: dict[str, Any]) -> dict[str, Any]:
         return self.propose_plan(context)
+
+
+class OpenAIPlannerClient(ResponsesAPIPlannerClient):
+    def __init__(self, api_key: str | None = None, model: str | None = None,
+                 base_url: str | None = None, timeout: float = 25.0):
+        super().__init__(api_key, model, base_url, timeout, provider="openai")
+
+
+class GroqPlannerClient(ResponsesAPIPlannerClient):
+    def __init__(self, api_key: str | None = None, model: str | None = None,
+                 base_url: str | None = None, timeout: float = 25.0):
+        super().__init__(api_key, model, base_url, timeout, provider="groq",
+            api_key_env="GROQ_API_KEY", model_env="GROQ_MODEL", base_url_env="GROQ_BASE_URL",
+            default_model="openai/gpt-oss-20b", default_base_url="https://api.groq.com/openai/v1")

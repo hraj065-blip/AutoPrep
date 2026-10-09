@@ -11,4 +11,4 @@ The operation lifecycle is deliberately distinct:
 
 The graph applies a maximum step count, an operation budget, conditional routing, and a safe stop. Each successful action creates a versioned ledger entry with input/output hashes. Failed tool calls preserve the last valid frame. Reproducible scripted planning does not require a network or key.
 
-Cell text and headers are treated as data. The offline planner does not send them to an LLM. The optional OpenAI Responses adapter receives a compact profile without top values or examples. It requires a separate environment opt-in, returns strict structured output, and every proposal is validated locally before use. The local planner remains the default.
+Cell text and headers are treated as data. The offline planner does not send them to an LLM. Optional OpenAI and Groq Responses API adapters receive a compact profile without top values or examples. Hosted planning requires a provider key and separate environment opt-in, returns strict structured output, and validates every proposal locally before use. The local planner remains the default.
