@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% block title %}PrepPilot · Prepare data{% endblock %}
+{% extends "base.html" %}{% block title %}Auto Prep · Prepare data{% endblock %}
 {% block content %}
 <section class="hero p-4 p-md-5 mb-4"><div class="eyebrow">DATA PREPARATION & QUALITY</div><h1 class="display-5 fw-semibold mt-2">Make messy data<br>ready to trust.</h1><p class="lead col-lg-8">Profile your file, review evidence-backed preparation steps, and export an auditable dataset with its source preserved.</p></section>
 <div class="row g-4"><div class="col-lg-7"><div class="card shadow-sm"><div class="card-body p-4"><h2 class="h4">Start a preparation job</h2><form data-processing data-processing-message="Uploading, profiling, and preparing your dataset…" action="{{ url_for('main.upload_job') }}" method="post" enctype="multipart/form-data">

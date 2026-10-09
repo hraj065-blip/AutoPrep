@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}PrepPilot{% endblock %}</title>
+  <title>{% block title %}Auto Prep{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/app.css" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark"><div class="container"><a class="navbar-brand" href="{{ url_for('main.index') }}">PrepPilot <span>✦</span></a><div class="d-flex align-items-center gap-3"><span class="navbar-text">From messy data to trusted data</span>{% if session.get('authenticated') %}<form method="post" action="{{ url_for('main.logout') }}" class="m-0"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-outline-light">Log out</button></form>{% endif %}</div></div></nav>
+<nav class="navbar navbar-expand-lg navbar-dark"><div class="container"><a class="navbar-brand" href="{{ url_for('main.index') }}">Auto Prep <span>✦</span></a><div class="d-flex align-items-center gap-3"><span class="navbar-text">From messy data to trusted data</span>{% if session.get('authenticated') %}<form method="post" action="{{ url_for('main.logout') }}" class="m-0"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-outline-light">Log out</button></form>{% endif %}</div></div></nav>
 <main class="container py-4">
   {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,message in messages %}<div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
   {% block content %}{% endblock %}
@@ -21,7 +21,7 @@
     <div class="processing-track mt-3" aria-hidden="true"><span></span></div>
   </div>
 </div>
-<footer class="container py-4 small text-secondary">PrepPilot · deterministic transformations, human controlled decisions</footer>
+<footer class="container py-4 small text-secondary">Auto Prep · deterministic transformations, human controlled decisions</footer>
 <script>
 (() => {
   const overlay = document.getElementById('processingOverlay');
