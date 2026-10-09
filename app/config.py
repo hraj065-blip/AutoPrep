@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 class Config:
+    IS_VERCEL = bool(os.environ.get("VERCEL"))
     SECRET_KEY = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
     DEBUG = os.environ.get("FLASK_DEBUG", "0") == "1"
     INSTANCE_PATH = Path(os.environ.get("PREPPILOT_INSTANCE_PATH", "instance"))

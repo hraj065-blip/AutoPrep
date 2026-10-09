@@ -87,6 +87,8 @@ In Vercel, import the GitHub repository and connect a PostgreSQL integration tha
 - `SECRET_KEY`: a long random secret used to sign sessions.
 - Optional hosted planning: set `PREPPILOT_PLANNER=groq`, `GROQ_API_KEY`, and `PREPPILOT_ALLOW_DATA_TO_LLM=1` for Groq, or set `PREPPILOT_PLANNER=openai`, `OPENAI_API_KEY`, and the same consent flag for OpenAI. Groq defaults to model `openai/gpt-oss-20b` and endpoint `https://api.groq.com/openai/v1`.
 
+To view visitor and page-view data in Vercel, enable Web Analytics from the project's Analytics section before deploying. The shared page template loads Vercel's tracker only on Vercel deployments.
+
 Vercel's function request and response body limit is 4.5 MB; PrepPilot defaults to a conservative 2 MB upload limit on Vercel and 25 MB locally to leave room for multipart overhead and exports. No login is required, and all visitors share the same workspace. Do not use sensitive data or treat this demo as a production multi-tenant service.
 
 Each push to the connected production branch triggers a new Vercel deployment. Configure environment variables separately for Preview and Production if you use both.
