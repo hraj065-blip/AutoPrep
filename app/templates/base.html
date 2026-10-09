@@ -12,5 +12,40 @@
   {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,message in messages %}<div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
   {% block content %}{% endblock %}
 </main>
+<div class="processing-overlay" id="processingOverlay" hidden role="status" aria-live="polite" aria-atomic="true">
+  <div class="processing-card">
+    <div class="processing-spinner" aria-hidden="true"></div>
+    <h2 class="h5 mb-2" id="processingTitle">Processing your dataset…</h2>
+    <p class="text-secondary mb-2">Please keep this page open. Processing time depends on file size and selected operations.</p>
+    <p class="small mb-0">Elapsed: <span id="processingElapsed">0:00</span></p>
+    <div class="processing-track mt-3" aria-hidden="true"><span></span></div>
+  </div>
+</div>
 <footer class="container py-4 small text-secondary">PrepPilot · deterministic transformations, human controlled decisions</footer>
+<script>
+(() => {
+  const overlay = document.getElementById('processingOverlay');
+  const title = document.getElementById('processingTitle');
+  const elapsed = document.getElementById('processingElapsed');
+  let startedAt = 0;
+  document.querySelectorAll('form[data-processing]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      if (form.dataset.submitting === 'true') {
+        event.preventDefault();
+        return;
+      }
+      form.dataset.submitting = 'true';
+      startedAt = Date.now();
+      title.textContent = form.dataset.processingMessage || 'Processing your request…';
+      elapsed.textContent = '0:00';
+      overlay.hidden = false;
+      document.body.classList.add('is-processing');
+      window.setInterval(() => {
+        const seconds = Math.floor((Date.now() - startedAt) / 1000);
+        elapsed.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+      }, 1000);
+    });
+  });
+})();
+</script>
 </body></html>

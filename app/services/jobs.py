@@ -138,7 +138,8 @@ def candidate_frame(job: dict[str, Any]) -> pd.DataFrame:
 
 def decide_review(database: str, job_id: str, review_id: str, decision: str,
                   reason: str, max_rows: int, max_columns: int, max_agent_steps: int = 5,
-                  arguments_json: str | None = None, columns_json: str | None = None) -> dict[str, Any]:
+                  arguments_json: str | None = None, columns_json: str | None = None,
+                  allow_row_deletion: bool = False) -> dict[str, Any]:
     item = get_job(database, job_id)
     if not item:
         raise KeyError("Job not found")
@@ -172,8 +173,12 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
             operation["target_columns"] = checked.columns
         input_hash = frame_hash(frame)
         tool = {"type": operation["operation_type"], "columns": operation["target_columns"], "arguments": operation["arguments"]}
+        policies = dict(item["payload"].get("metadata", {}).get("policies", {}))
+        row_deletion_authorized = operation["operation_type"] in {"drop_duplicates", "drop_empty_rows"} and allow_row_deletion
+        if row_deletion_authorized:
+            policies["allow_row_deletion"] = True
         candidate = execute_safely(frame, tool,
-            policies=item["payload"].get("metadata", {}).get("policies", {}), approved=True)
+            policies=policies, approved=True)
         validate_frame(candidate.drop(columns=["_source_row_id"], errors="ignore"), max_rows, max_columns)
         validation = validate_candidate(source_frame(item), candidate)
         if not validation["passed"]:
@@ -199,6 +204,8 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
         operation["output_version"] = operation["input_version"] + 1
         operations = [operation if op.get("operation_id") == operation["operation_id"] else op for op in operations]
         db.update_job(database, job_id, candidate=_df_bytes(candidate))
+        if row_deletion_authorized:
+            item["payload"].setdefault("metadata", {})["policies"] = policies
         db.store_dataset_version(database, job_id, operation["output_version"],
                                  _df_bytes(candidate), operation["operation_id"])
         item["payload"]["current_candidate_version"] = operation["output_version"]
@@ -215,7 +222,10 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
     if new_status != JobStatus.NEEDS_REVIEW.value:
         item["payload"] = transition_payload(item["payload"], JobStatus(new_status))
     db.update_job(database, job_id, payload=item["payload"], operations=operations, reviews=reviews,
-        event=("review_decided", {"review_id": review_id, "decision": decision_enum.value}))
+        event=("review_decided", {"review_id": review_id, "decision": decision_enum.value,
+            "row_deletion_authorized": bool(decision_enum in {ReviewDecision.APPROVE, ReviewDecision.EDIT}
+                and operation["operation_type"] in {"drop_duplicates", "drop_empty_rows"}
+                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_row_deletion", False))}))
     if decision_enum == ReviewDecision.APPROVE and not open_reviews:
         from app.agent.planner import EvidencePlanner
         resumed = run_workflow(candidate, item["payload"]["objective"], EvidencePlanner(),
