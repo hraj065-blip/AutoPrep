@@ -61,7 +61,7 @@ class OperationSpec(StrictModel):
     type: Literal[
         "trim_whitespace", "normalize_whitespace", "normalize_case", "parse_numeric",
         "parse_date", "rename_columns", "normalize_column_names", "drop_duplicates",
-        "drop_empty_rows", "drop_empty_columns", "fill_missing", "normalize_categories",
+        "drop_empty_rows", "drop_missing_rows", "drop_empty_columns", "fill_missing", "normalize_categories",
         "replace_sentinels", "cast_type", "validate_constraint"
     ]
     columns: list[str] = Field(default_factory=list)
@@ -74,20 +74,28 @@ class OperationSpec(StrictModel):
             "normalize_case": {"mode"}, "parse_numeric": {"decimal", "thousands"},
             "parse_date": {"dayfirst", "format"}, "rename_columns": {"mapping"},
             "normalize_column_names": set(), "drop_duplicates": {"subset", "keep"},
-            "drop_empty_rows": set(), "drop_empty_columns": set(),
-            "fill_missing": {"value"}, "normalize_categories": {"mapping"},
+            "drop_empty_rows": set(), "drop_missing_rows": {"sentinels"}, "drop_empty_columns": set(),
+            "fill_missing": {"value", "method", "sentinels"}, "normalize_categories": {"mapping"},
             "replace_sentinels": {"values"}, "cast_type": {"target"},
             "validate_constraint": {"rule"},
         }
         unknown = set(self.arguments) - allowed[self.type]
         if unknown:
             raise ValueError(f"Unknown arguments for {self.type}: {sorted(unknown)}")
-        required = {"fill_missing": {"value"}, "normalize_categories": {"mapping"},
+        required = {"normalize_categories": {"mapping"},
                     "replace_sentinels": {"values"}, "cast_type": {"target"},
                     "rename_columns": {"mapping"}}
         missing = required.get(self.type, set()) - set(self.arguments)
         if missing:
             raise ValueError(f"Missing required arguments for {self.type}: {sorted(missing)}")
+        if self.type == "fill_missing":
+            if ("value" in self.arguments) == ("method" in self.arguments):
+                raise ValueError("fill_missing requires exactly one of value or method")
+            if self.arguments.get("method") not in {None, "mean", "median", "mode"}:
+                raise ValueError("fill_missing method must be mean, median, or mode")
+        if "sentinels" in self.arguments and (not isinstance(self.arguments["sentinels"], list)
+                or not all(isinstance(value, str) for value in self.arguments["sentinels"])):
+            raise ValueError("sentinels must be a list of strings")
         if self.type == "parse_numeric":
             decimal = self.arguments.get("decimal", ".")
             thousands = self.arguments.get("thousands", ",")

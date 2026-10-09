@@ -139,7 +139,7 @@ def candidate_frame(job: dict[str, Any]) -> pd.DataFrame:
 def decide_review(database: str, job_id: str, review_id: str, decision: str,
                   reason: str, max_rows: int, max_columns: int, max_agent_steps: int = 5,
                   arguments_json: str | None = None, columns_json: str | None = None,
-                  allow_row_deletion: bool = False) -> dict[str, Any]:
+                  allow_row_deletion: bool = False, allow_imputation: bool = False) -> dict[str, Any]:
     item = get_job(database, job_id)
     if not item:
         raise KeyError("Job not found")
@@ -174,9 +174,12 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
         input_hash = frame_hash(frame)
         tool = {"type": operation["operation_type"], "columns": operation["target_columns"], "arguments": operation["arguments"]}
         policies = dict(item["payload"].get("metadata", {}).get("policies", {}))
-        row_deletion_authorized = operation["operation_type"] in {"drop_duplicates", "drop_empty_rows"} and allow_row_deletion
+        row_deletion_authorized = operation["operation_type"] in {"drop_duplicates", "drop_empty_rows", "drop_missing_rows"} and allow_row_deletion
+        imputation_authorized = operation["operation_type"] == "fill_missing" and allow_imputation
         if row_deletion_authorized:
             policies["allow_row_deletion"] = True
+        if imputation_authorized:
+            policies["allow_imputation"] = True
         candidate = execute_safely(frame, tool,
             policies=policies, approved=True)
         validate_frame(candidate.drop(columns=["_source_row_id"], errors="ignore"), max_rows, max_columns)
@@ -204,7 +207,7 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
         operation["output_version"] = operation["input_version"] + 1
         operations = [operation if op.get("operation_id") == operation["operation_id"] else op for op in operations]
         db.update_job(database, job_id, candidate=_df_bytes(candidate))
-        if row_deletion_authorized:
+        if row_deletion_authorized or imputation_authorized:
             item["payload"].setdefault("metadata", {})["policies"] = policies
         db.store_dataset_version(database, job_id, operation["output_version"],
                                  _df_bytes(candidate), operation["operation_id"])
@@ -224,8 +227,11 @@ def decide_review(database: str, job_id: str, review_id: str, decision: str,
     db.update_job(database, job_id, payload=item["payload"], operations=operations, reviews=reviews,
         event=("review_decided", {"review_id": review_id, "decision": decision_enum.value,
             "row_deletion_authorized": bool(decision_enum in {ReviewDecision.APPROVE, ReviewDecision.EDIT}
-                and operation["operation_type"] in {"drop_duplicates", "drop_empty_rows"}
-                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_row_deletion", False))}))
+                and operation["operation_type"] in {"drop_duplicates", "drop_empty_rows", "drop_missing_rows"}
+                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_row_deletion", False)),
+            "imputation_authorized": bool(decision_enum in {ReviewDecision.APPROVE, ReviewDecision.EDIT}
+                and operation["operation_type"] == "fill_missing"
+                and item["payload"].get("metadata", {}).get("policies", {}).get("allow_imputation", False))}))
     if decision_enum == ReviewDecision.APPROVE and not open_reviews:
         from app.agent.planner import EvidencePlanner
         resumed = run_workflow(candidate, item["payload"]["objective"], EvidencePlanner(),
@@ -323,9 +329,34 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
     frame = candidate_frame(item)
     ops = []
     for op in spec.operations:
-        high_risk = op.type in {"drop_duplicates", "drop_empty_rows", "drop_empty_columns"}
+        high_risk = op.type in {"drop_duplicates", "drop_empty_rows", "drop_missing_rows", "drop_empty_columns", "fill_missing"}
+        evidence: dict[str, Any] = {}
+        if op.type == "drop_missing_rows":
+            subset = op.columns or [column for column in frame.columns if column != "_source_row_id"]
+            missing = frame[subset].isna().copy()
+            sentinels = {str(value).strip().casefold() for value in op.arguments.get("sentinels", [])}
+            for column in subset:
+                if sentinels:
+                    normalized = frame[column].map(lambda value: str(value).strip().casefold() if pd.notna(value) else "")
+                    missing[column] |= normalized.isin(sentinels)
+            evidence["missing_row_count"] = int(missing.any(axis=1).sum())
+        elif op.type == "fill_missing":
+            missing = frame[op.columns].isna().copy()
+            sentinels = {str(value).strip().casefold() for value in op.arguments.get("sentinels", [])}
+            for column in op.columns:
+                if sentinels:
+                    normalized = frame[column].map(lambda value: str(value).strip().casefold() if pd.notna(value) else "")
+                    missing[column] |= normalized.isin(sentinels)
+            evidence["missing_values_count"] = int(missing.sum().sum())
+        reason = "Explicit operation from user supplied YAML specification."
+        if op.type == "fill_missing":
+            reason = f"Fill missing values in {', '.join(op.columns)} using {op.arguments.get('method', 'an explicit value')} and review the result."
+        elif op.type == "drop_missing_rows":
+            reason = f"Remove rows with missing values in {', '.join(op.columns)} and review the resulting row count."
+        if op.arguments.get("sentinels"):
+            reason += f" Treat these selected placeholder markers as missing: {', '.join(op.arguments['sentinels'])}."
         ops.append(PreparationOperation(operation_type=op.type, target_columns=op.columns,
-            arguments=op.arguments, reason="Explicit operation from user supplied YAML specification.",
+            arguments=op.arguments, reason=reason, evidence=evidence,
             created_by="user", risk_level=RiskLevel.HIGH if high_risk else RiskLevel.LOW,
             requires_approval=high_risk).model_dump(mode="json"))
     result = run_workflow(frame, spec.objective, ScriptedPlanner(ops), max_steps,
@@ -338,12 +369,19 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
             reviews.append(ReviewItem(job_id=job_id, issue_type=operation["operation_type"],
                 question=f"Approve YAML operation: {operation['reason']}",
                 supporting_evidence=operation.get("evidence", {}),
-                affected_count=operation.get("evidence", {}).get("duplicate_count", 0),
+                affected_count=operation.get("evidence", {}).get("duplicate_count",
+                    operation.get("evidence", {}).get("missing_row_count",
+                    operation.get("evidence", {}).get("missing_values_count", 0))),
                 proposed_resolution=operation, risk_level=RiskLevel.HIGH).model_dump(mode="json"))
     item["payload"]["objective"] = spec.objective
     item["payload"]["specification_version"] = spec.version
     item["payload"]["metadata"]["specification"] = spec.model_dump(mode="json", by_alias=True)
-    item["payload"]["metadata"]["policies"] = spec.policies.model_dump(mode="json")
+    prior_policies = item["payload"]["metadata"].get("policies", {})
+    declared_policies = spec.policies.model_dump(mode="json")
+    item["payload"]["metadata"]["policies"] = {
+        key: bool(prior_policies.get(key, False) or declared_policies.get(key, False))
+        if key in {"allow_row_deletion", "allow_imputation"} else value
+        for key, value in declared_policies.items()}
     item["payload"]["metadata"]["execution"] = spec.execution.model_dump(mode="json")
     spec_status = (JobStatus.FAILED if result.get("status") in {"SAFE_STOP", "FAILED"} else
         JobStatus.NEEDS_REVIEW if any(r["status"] == "OPEN" for r in reviews) else JobStatus.READY_TO_FINALIZE)

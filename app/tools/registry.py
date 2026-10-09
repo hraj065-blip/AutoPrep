@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from app.specifications.schema import OperationSpec
 
-DESTRUCTIVE_ROW_TOOLS = {"drop_duplicates", "drop_empty_rows"}
+DESTRUCTIVE_ROW_TOOLS = {"drop_duplicates", "drop_empty_rows", "drop_missing_rows"}
 DESTRUCTIVE_COLUMN_TOOLS = {"drop_empty_columns"}
 
 
@@ -95,13 +95,41 @@ def execute_operation(frame: pd.DataFrame, raw_spec: dict[str, Any]) -> pd.DataF
     elif spec.type == "drop_empty_rows":
         subset = spec.columns or [column for column in out.columns if column != "_source_row_id"]
         out = out.dropna(axis=0, how="all", subset=subset)
+    elif spec.type == "drop_missing_rows":
+        subset = spec.columns or [column for column in out.columns if column != "_source_row_id"]
+        sentinels = {str(value).strip().casefold() for value in args.get("sentinels", [])}
+        for col in subset:
+            if sentinels:
+                normalized = out[col].map(lambda value: str(value).strip().casefold() if pd.notna(value) else "")
+                out.loc[normalized.isin(sentinels), col] = pd.NA
+        out = out.dropna(axis=0, how="any", subset=subset)
     elif spec.type == "drop_empty_columns":
         drop = [c for c in (spec.columns or list(out.columns)) if c != "_source_row_id" and out[c].isna().all()]
         out = out.drop(columns=drop)
     elif spec.type == "fill_missing":
-        if "value" not in args:
-            raise ValueError("fill_missing requires an explicit value")
-        out[spec.columns] = out[spec.columns].fillna(args["value"])
+        method = args.get("method")
+        if method is None:
+            out[spec.columns] = out[spec.columns].fillna(args["value"])
+        else:
+            sentinels = {str(value).strip().casefold() for value in args.get("sentinels", [])}
+            for col in spec.columns:
+                values = out[col]
+                if sentinels:
+                    normalized = values.map(lambda value: str(value).strip().casefold() if pd.notna(value) else "")
+                    values = values.mask(normalized.isin(sentinels), pd.NA)
+                if method in {"mean", "median"}:
+                    numeric = pd.to_numeric(values, errors="coerce")
+                    if (values.notna() & numeric.isna()).any():
+                        raise ValueError(f"{method} imputation requires numeric values in {col!r}")
+                    fill_value = numeric.mean() if method == "mean" else numeric.median()
+                    if pd.isna(fill_value):
+                        raise ValueError(f"Cannot calculate {method} for {col!r}: it has no observed numeric values")
+                    out[col] = numeric.fillna(fill_value)
+                else:
+                    modes = values.mode(dropna=True)
+                    if modes.empty:
+                        raise ValueError(f"Cannot calculate mode for {col!r}: it has no observed values")
+                    out[col] = values.fillna(modes.iloc[0])
     elif spec.type == "replace_sentinels":
         sentinels = args.get("values")
         if not isinstance(sentinels, list) or not sentinels:

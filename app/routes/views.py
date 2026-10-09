@@ -124,7 +124,8 @@ def review(job_id: str, review_id: str):
         job = decide_review(_database(), job_id, review_id, request.form.get("decision", ""),
             request.form.get("reason", ""), current_app.config["MAX_ROWS"], current_app.config["MAX_COLUMNS"],
             current_app.config["MAX_AGENT_STEPS"], request.form.get("arguments_json"), request.form.get("columns_json"),
-            allow_row_deletion=request.form.get("allow_row_deletion") == "yes")
+            allow_row_deletion=request.form.get("allow_row_deletion") == "yes",
+            allow_imputation=request.form.get("allow_imputation") == "yes")
         flash(f"Review recorded. Job status: {job['payload']['status']}.", "success")
     except (ValueError, KeyError) as exc:
         flash(str(exc), "error")
@@ -144,7 +145,36 @@ def finalize(job_id: str):
 @bp.post("/jobs/<job_id>/spec")
 def apply_spec(job_id: str):
     try:
-        job = apply_yaml_spec(_database(), job_id, request.form.get("yaml_spec", ""), current_app.config["MAX_AGENT_STEPS"])
+        yaml_text = request.form.get("yaml_spec", "")
+        if request.form.get("missing_treatment") == "1":
+            job = get_job(_database(), job_id)
+            if not job:
+                return "Job not found", 404
+            column = request.form.get("missing_column", "")
+            method = request.form.get("missing_method", "")
+            column_info = next((c for c in job["profile"]["columns"] if c["name"] == column), None)
+            if not column_info or not (column_info["null_count"] or column_info["sentinel_candidates"]):
+                raise ValueError("Choose a column with missing values or detected placeholder values.")
+            if method not in {"mean", "median", "mode", "drop_rows"}:
+                raise ValueError("Choose mean, median, mode, or remove rows with missing values.")
+            treat_sentinels = request.form.get("treat_sentinels_as_missing") == "yes"
+            sentinel_values = column_info["sentinel_candidates"] if treat_sentinels else []
+            if method in {"mean", "median"}:
+                current = candidate_frame(job)[column]
+                if sentinel_values:
+                    normalized = current.map(lambda value: str(value).strip().casefold() if pd.notna(value) else "")
+                    current = current.mask(normalized.isin({str(value).casefold() for value in sentinel_values}), pd.NA)
+                numeric = pd.to_numeric(current, errors="coerce")
+                if (current.notna() & numeric.isna()).any() or not numeric.notna().any():
+                    raise ValueError("Mean and median require numeric values. If this column contains a detected placeholder, select the option to treat it as missing first.")
+            operation = ({"type": "drop_missing_rows", "columns": [column], "arguments": {}}
+                if method == "drop_rows" else
+                {"type": "fill_missing", "columns": [column], "arguments": {"method": method}})
+            if sentinel_values:
+                operation["arguments"]["sentinels"] = sentinel_values
+            yaml_text = json.dumps({"version": "1.0", "objective": "Handle missing values",
+                "operations": [operation]})
+        job = apply_yaml_spec(_database(), job_id, yaml_text, current_app.config["MAX_AGENT_STEPS"])
         flash(f"Specification processed. Job status: {job['payload']['status']}.", "success")
     except (ValueError, KeyError) as exc:
         flash(str(exc), "error")

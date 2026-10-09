@@ -28,22 +28,41 @@
   const title = document.getElementById('processingTitle');
   const elapsed = document.getElementById('processingElapsed');
   let startedAt = 0;
+  let timer = null;
+  const showProcessing = (message) => {
+    startedAt = Date.now();
+    title.textContent = message || 'Processing your request…';
+    elapsed.textContent = '0:00';
+    overlay.hidden = false;
+    document.body.classList.add('is-processing');
+    window.clearInterval(timer);
+    timer = window.setInterval(() => {
+      const seconds = Math.floor((Date.now() - startedAt) / 1000);
+      elapsed.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    }, 1000);
+  };
+  const hideProcessing = () => {
+    window.clearInterval(timer);
+    overlay.hidden = true;
+    document.body.classList.remove('is-processing');
+  };
+  window.PrepPilotProgress = { show: showProcessing, hide: hideProcessing };
   document.querySelectorAll('form[data-processing]').forEach((form) => {
     form.addEventListener('submit', (event) => {
+      if (form.dataset.allowNative === 'true') return;
       if (form.dataset.submitting === 'true') {
         event.preventDefault();
         return;
       }
+      event.preventDefault();
       form.dataset.submitting = 'true';
-      startedAt = Date.now();
-      title.textContent = form.dataset.processingMessage || 'Processing your request…';
-      elapsed.textContent = '0:00';
-      overlay.hidden = false;
-      document.body.classList.add('is-processing');
-      window.setInterval(() => {
-        const seconds = Math.floor((Date.now() - startedAt) / 1000);
-        elapsed.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
-      }, 1000);
+      showProcessing(form.dataset.processingMessage);
+      const submitter = event.submitter;
+      window.requestAnimationFrame(() => window.setTimeout(() => {
+        form.dataset.allowNative = 'true';
+        if (submitter) form.requestSubmit(submitter);
+        else form.requestSubmit();
+      }, 120));
     });
   });
 })();

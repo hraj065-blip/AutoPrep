@@ -94,7 +94,7 @@ Each push to the connected production branch triggers a new Vercel deployment. C
 
 ## Supported operations
 
-The registry supports trim/whitespace normalization, case normalization, explicit numeric/date parsing, safe column rename/normalization, duplicate/empty row and column removal under policy, missing-value replacement under explicit configuration, category mapping, type casting, and validation-only operations. The default evidence planner currently proposes only whitespace trim and high-risk duplicate review. It preserves numeric-looking IDs, uncertain dates, sentinels, outliers, and missing values unless a user supplies an explicit policy and operation.
+The registry supports trim/whitespace normalization, case normalization, explicit numeric/date parsing, safe column rename/normalization, duplicate/empty/missing row and column removal under policy, and missing-value imputation by explicit value, mean, median, or mode. The web review flow asks for separate approval before imputation or row removal. The default evidence planner currently proposes only whitespace trim and high-risk duplicate review. It preserves numeric-looking IDs, uncertain dates, sentinels, outliers, and missing values unless a user selects an explicit treatment and approves it.
 
 ## Review, lineage, and replay
 
