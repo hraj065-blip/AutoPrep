@@ -63,7 +63,8 @@ class ResponsesAPIPlannerClient:
             ],
             "text": {"format": {"type": "json_schema", "name": "preparation_plan", "strict": True, "schema": schema}}}
         request = Request(self.base_url + "/responses", data=json.dumps(payload).encode("utf-8"),
-            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, method="POST")
+            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
+                     "Accept": "application/json", "User-Agent": "AutoPrep/1.0"}, method="POST")
         last_error: Exception | None = None
         for attempt in range(2):
             try:
