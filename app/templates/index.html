@@ -1,14 +1,57 @@
-{% extends "base.html" %}{% block title %}Auto Prep · Prepare data{% endblock %}
+{% extends "base.html" %}
+{% block title %}Auto Prep · Agentic data preparation{% endblock %}
 {% block content %}
-<section class="hero p-4 p-md-5 mb-4"><div class="eyebrow">DATA PREPARATION & QUALITY</div><h1 class="display-5 fw-semibold mt-2">Make messy data<br>ready to trust.</h1><p class="lead col-lg-8">Profile your file, review evidence-backed preparation steps, and export an auditable dataset with its source preserved.</p></section>
-<div class="row g-4"><div class="col-lg-7"><div class="card shadow-sm"><div class="card-body p-4"><h2 class="h4">Start a preparation job</h2><form data-processing data-processing-message="Uploading, profiling, and preparing your dataset…" action="{{ url_for('main.upload_job') }}" method="post" enctype="multipart/form-data">
-<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label class="form-label mt-3" for="file">Dataset file</label><input class="form-control" id="file" name="file" type="file" accept=".csv,.xlsx" required><div class="form-text">CSV or XLSX · maximum {{ (config.MAX_CONTENT_LENGTH / 1048576)|int }} MB</div>
-<label class="form-label mt-3" for="objective">Preparation objective</label><input class="form-control" id="objective" name="objective" maxlength="500" value="Prepare for analysis">
-<div class="mt-3" id="sheetPicker" hidden><label class="form-label" for="sheet">Worksheet</label><select class="form-select" id="sheet" name="sheet"></select></div>
-<button class="btn btn-primary mt-4" type="submit">Profile and prepare</button></form></div></div></div>
-<div class="col-lg-5"><div class="card accent-card h-100"><div class="card-body p-4"><div class="eyebrow">HOW IT WORKS</div><ol class="steps mt-3"><li><b>Profile</b><span>Measure missingness, types, duplicates, and formatting.</span></li><li><b>Propose</b><span>Use evidence to plan bounded, deterministic changes.</span></li><li><b>Review</b><span>Keep ambiguous and high impact decisions in your hands.</span></li><li><b>Validate</b><span>Export a reproducible result with a transformation ledger.</span></li></ol></div></div></div></div>
-<section class="mt-4"><div class="d-flex justify-content-between align-items-center mb-2"><h2 class="h4 mb-0">Recent jobs</h2><a href="{{ url_for('main.evaluation_lab') }}">Evaluation Lab</a></div><div class="row g-3 mb-3">{% for label,key in [('Total jobs','total'),('Completed','completed'),('Needs review','review'),('Failed','failed')] %}<div class="col-6 col-md-3"><div class="card"><div class="card-body py-3"><div class="metric">{{ counts[key] }}</div><small>{{ label }}</small></div></div></div>{% endfor %}</div><div class="card"><div class="card-body">{% if jobs %}<div class="table-responsive"><table class="table mb-0"><thead><tr><th>Source file</th><th>Status</th><th>Created</th><th></th></tr></thead><tbody>{% for job in jobs %}<tr><td>{{ job.source_filename }}</td><td>{{ job.status }}</td><td>{{ job.created_at }}</td><td><a href="{{ url_for('main.job_detail',job_id=job.job_id) }}">Open</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<span class="text-secondary">No jobs yet. Upload a dataset to begin.</span>{% endif %}</div></div></section>
+<section class="hero hero-agent p-4 p-md-5 mb-4">
+  <div class="eyebrow">AGENTIC DATA PREPARATION</div>
+  <h1 class="display-5 fw-semibold mt-2">A data prep agent<br>that shows its work.</h1>
+  <p class="lead col-lg-8">AutoPrep profiles your file, chooses evidence-backed actions, validates each result, and brings uncertain or high-impact decisions to you before export.</p>
+  <div class="d-flex gap-2 flex-wrap mt-4"><a class="btn btn-primary btn-lg" href="#start-job">Prepare a dataset</a><a class="btn btn-outline-secondary btn-lg" href="{{ url_for('main.evaluation_lab') }}">See benchmark results</a></div>
+  <div class="agent-loop mt-5" aria-label="Agent workflow">
+    <div><span>01</span><b>Observe</b><small>Profile the data</small></div><i aria-hidden="true">→</i>
+    <div><span>02</span><b>Plan</b><small>Choose a bounded action</small></div><i aria-hidden="true">→</i>
+    <div><span>03</span><b>Verify</b><small>Check and replan safely</small></div><i aria-hidden="true">→</i>
+    <div><span>04</span><b>Prove</b><small>Review, lineage, replay</small></div>
+  </div>
+</section>
+
+<section class="mb-5" id="agent-value">
+  <div class="section-heading"><div><div class="eyebrow">WHY AN AGENT</div><h2 class="h3 mt-2">More than a one-shot cleaning script</h2></div><p class="text-secondary col-lg-5 mb-0">The agent adds context, feedback, and governed decisions around the transformations. The benchmark reports those behaviors separately from cell accuracy.</p></div>
+  <div class="row g-3 mt-2">
+    <div class="col-md-6 col-xl-3"><article class="capability-card h-100"><span class="capability-index">A</span><h3>It observes before acting</h3><p>Profiles types, missingness, duplicates, sentinels, and formatting. Proposals cite measured evidence instead of applying every cleanup rule to every file.</p></article></div>
+    <div class="col-md-6 col-xl-3"><article class="capability-card h-100"><span class="capability-index">B</span><h3>It checks its own work</h3><p>Each action runs through a deterministic tool and a separate validator. Validation feedback informs the next planning pass; rejected actions can be revised within a bounded step budget.</p></article></div>
+    <div class="col-md-6 col-xl-3"><article class="capability-card h-100"><span class="capability-index">C</span><h3>It knows when to ask</h3><p>Duplicate removal, imputation, and placeholder treatment stay behind explicit policy and human approval. The agent can recommend; it cannot authorize itself.</p></article></div>
+    <div class="col-md-6 col-xl-3"><article class="capability-card h-100"><span class="capability-index">D</span><h3>It leaves proof behind</h3><p>Operation hashes, changed-cell evidence, row lineage, replay checks, and an audit export make the result explainable after the workflow ends.</p></article></div>
+  </div>
+</section>
+
+{% if benchmark %}
+<section class="benchmark-highlight mb-5">
+  <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap"><div><div class="eyebrow">REPRODUCIBLE EVIDENCE</div><h2 class="h3 mt-2 mb-1">Agent value, measured with safety in view</h2><p class="text-secondary mb-0">Historical synthetic run · {{ benchmark.cases }} cases · {{ benchmark.scenario_families }} scenario families · seed {{ benchmark.seed }} · {{ benchmark.generated_at[:10] }}</p></div><a class="btn btn-outline-secondary" href="{{ url_for('main.evaluation_lab') }}">Open Evaluation Lab →</a></div>
+  <div class="row g-3 mt-3">
+    <div class="col-6 col-lg-3"><div class="proof-metric"><b>{{ (benchmark.metrics.agent.exact_accuracy * 100)|round(1) }}%</b><span>agent exact-cell accuracy</span></div></div>
+    <div class="col-6 col-lg-3"><div class="proof-metric"><b>{{ (benchmark.metrics.fixed_pandas.exact_accuracy * 100)|round(1) }}%</b><span>fixed pandas baseline</span></div></div>
+    <div class="col-6 col-lg-3"><div class="proof-metric"><b>{{ benchmark.human_review_cases }}/{{ benchmark.cases // benchmark.scenario_families }}</b><span>duplicate cases routed to review</span></div></div>
+    <div class="col-6 col-lg-3"><div class="proof-metric"><b>{{ benchmark.failed_runs }}</b><span>failed agent runs in this suite</span></div></div>
+  </div>
+  <p class="benchmark-caveat mt-3 mb-0"><strong>Read this honestly:</strong> exact accuracy ties the fixed script on this controlled dataset. The agent-specific result is governed review routing, validation, and a replayable ledger—not a claim that the agent beats pandas at trimming whitespace.</p>
+</section>
+{% endif %}
+
+<div class="row g-4" id="start-job">
+  <div class="col-lg-7"><div class="card shadow-sm h-100"><div class="card-body p-4"><div class="eyebrow">START A WORKFLOW</div><h2 class="h3 mt-2">Prepare a dataset</h2><p class="text-secondary">Get a profile and candidate preparation plan. Review sensitive transformations before you approve them.</p>
+    <form data-processing data-processing-message="Uploading, profiling, and preparing your dataset…" action="{{ url_for('main.upload_job') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label class="form-label mt-3" for="file">Dataset file</label><input class="form-control" id="file" name="file" type="file" accept=".csv,.xlsx" required><div class="form-text">CSV or XLSX · maximum {{ (config.MAX_CONTENT_LENGTH / 1048576)|int }} MB</div>
+      <label class="form-label mt-3" for="objective">Preparation objective</label><input class="form-control" id="objective" name="objective" maxlength="500" value="Prepare for analysis">
+      <div class="mt-3" id="sheetPicker" hidden><label class="form-label" for="sheet">Worksheet</label><select class="form-select" id="sheet" name="sheet"></select></div>
+      <button class="btn btn-primary mt-4" type="submit">Profile and prepare</button>
+    </form>
+  </div></div></div>
+  <div class="col-lg-5"><div class="card accent-card h-100"><div class="card-body p-4"><div class="eyebrow">CONTROL BY DESIGN</div><h2 class="h4 mt-2">Agent-led. Human-governed.</h2><ul class="trust-list mt-3"><li><b>Allowlisted tools</b><span>The planner cannot run arbitrary code.</span></li><li><b>Approval gates</b><span>Destructive and uncertain changes wait for a person.</span></li><li><b>Privacy controls</b><span>Offline planning is the default; hosted planning requires explicit profile-sharing opt-in.</span></li><li><b>Reproducible output</b><span>Replay the ledger against the immutable source.</span></li></ul></div></div></div>
+</div>
+
+<section class="mt-5"><div class="d-flex justify-content-between align-items-center mb-2"><h2 class="h4 mb-0">Recent jobs</h2><a href="{{ url_for('main.evaluation_lab') }}">Evaluation Lab</a></div><div class="row g-3 mb-3">{% for label,key in [('Total jobs','total'),('Completed','completed'),('Needs review','review'),('Failed','failed')] %}<div class="col-6 col-md-3"><div class="card"><div class="card-body py-3"><div class="metric">{{ counts[key] }}</div><small>{{ label }}</small></div></div></div>{% endfor %}</div><div class="card"><div class="card-body">{% if jobs %}<div class="table-responsive"><table class="table mb-0"><thead><tr><th>Source file</th><th>Status</th><th>Created</th><th></th></tr></thead><tbody>{% for job in jobs %}<tr><td>{{ job.source_filename }}</td><td>{{ job.status }}</td><td>{{ job.created_at }}</td><td><a href="{{ url_for('main.job_detail',job_id=job.job_id) }}">Open</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<span class="text-secondary">No jobs yet. Upload a dataset to begin.</span>{% endif %}</div></div></section>
 <script>
 const file=document.getElementById('file'), picker=document.getElementById('sheetPicker'), select=document.getElementById('sheet');
 file.addEventListener('change', async()=>{picker.hidden=true;select.innerHTML='';if(!file.files[0]?.name.toLowerCase().endsWith('.xlsx'))return;const data=new FormData();data.append('file',file.files[0]);window.PrepPilotProgress?.show('Reading workbook sheets…');try{const r=await fetch('{{ url_for("main.sheets") }}',{method:'POST',body:data});const result=await r.json();if(!r.ok){alert(result.error);return}for(const s of result.sheets){const option=document.createElement('option');option.value=s.name;option.textContent=`${s.name} (${s.preview_columns} columns)`;select.appendChild(option)}picker.hidden=false;}catch(error){alert('Could not read workbook sheets. Please try again.');}finally{window.PrepPilotProgress?.hide();}});
-</script>{% endblock %}
+</script>
+{% endblock %}

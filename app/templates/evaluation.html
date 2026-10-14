@@ -1,4 +1,44 @@
-{% extends "base.html" %}{% block title %}Evaluation Lab · Auto Prep{% endblock %}
-{% block content %}<div class="eyebrow">REPRODUCIBLE EVALUATION</div><h1 class="h2 mt-2">Evaluation Lab</h1><p class="text-secondary">Every result below comes from a saved run. Synthetic results do not establish general performance on real-world data.</p>
-<div class="card mb-4"><div class="card-body p-4"><h2 class="h5">Run offline benchmark</h2><p class="small text-secondary">Creates 100 seeded cases, compares no-op, fixed pandas, and scripted LangGraph behavior.</p><form method="post" action="{{ url_for('main.run_evaluation') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="mode" value="scripted-agent"><button class="btn btn-primary">Run 100 scripted cases</button></form></div></div>
-{% for run in runs %}<div class="card mb-3"><div class="card-body p-4"><div class="d-flex justify-content-between"><h2 class="h5">{{ run.mode }} · {{ run.summary.get('cases',0) }} cases</h2><span class="badge status">{{ run.status }}</span></div><p class="small text-secondary">Run {{ run.run_id }} · {{ run.created_at }}</p>{% if run.summary.get('mean_exact_accuracy') %}<div class="row">{% for method,value in run.summary.mean_exact_accuracy.items() %}<div class="col-md-4"><div class="metric">{{ (value*100)|round(1) }}%</div><small>{{ method|replace('_',' ')|title }}</small></div>{% endfor %}</div>{% else %}<p>{{ run.summary.get('reason','No result details') }}</p>{% endif %}<p class="small mt-3 mb-0">Scenario families: {{ run.summary.get('scenario_families',[])|join(', ') }}</p></div></div>{% else %}<div class="card"><div class="card-body text-secondary">No benchmark has been run yet.</div></div>{% endfor %}{% endblock %}
+{% extends "base.html" %}
+{% block title %}Evaluation Lab · Auto Prep{% endblock %}
+{% block content %}
+<section class="eval-hero p-4 p-md-5 mb-4">
+  <div class="eyebrow">PERFORMANCE · SAFETY · AGENT VALUE</div>
+  <h1 class="display-6 fw-semibold mt-2">Evaluation Lab</h1>
+  <p class="lead col-lg-8 mb-0">Compare the agent with simple baselines—and inspect where its value comes from: selective actions, human-review routing, and accountable execution.</p>
+</section>
+
+{% if benchmark %}
+<section class="card benchmark-card mb-4">
+  <div class="card-body p-4 p-lg-5">
+    <div class="d-flex justify-content-between gap-3 flex-wrap align-items-start"><div><div class="eyebrow">CHECKED-IN REFERENCE RUN · {{ benchmark.generated_at[:10] }}</div><h2 class="h3 mt-2 mb-1">Seeded synthetic benchmark</h2><p class="text-secondary mb-0">{{ benchmark.cases }} cases across {{ benchmark.scenario_families }} scenario families · seed {{ benchmark.seed }} · {{ benchmark.duration_seconds }} seconds at generation</p></div><span class="badge status">{{ benchmark.status }}</span></div>
+
+    <div class="table-responsive mt-4"><table class="table align-middle performance-table"><caption class="caption-top">Macro-average by case. Exact cell accuracy measures output agreement with the synthetic ground truth.</caption><thead><tr><th scope="col">Strategy</th><th scope="col">Exact accuracy</th><th scope="col">Change precision</th><th scope="col">Change recall</th><th scope="col">Incorrect change rate</th></tr></thead><tbody>
+      <tr><th scope="row">No-op</th><td>{{ (benchmark.metrics.no_op.exact_accuracy * 100)|round(2) }}%</td><td>{{ (benchmark.metrics.no_op.changed_precision * 100)|round(1) }}%</td><td>{{ (benchmark.metrics.no_op.changed_recall * 100)|round(1) }}%</td><td>{{ (benchmark.metrics.no_op.incorrect_change_rate * 100)|round(1) }}%</td></tr>
+      <tr><th scope="row">Fixed pandas trim</th><td>{{ (benchmark.metrics.fixed_pandas.exact_accuracy * 100)|round(2) }}%</td><td>{{ (benchmark.metrics.fixed_pandas.changed_precision * 100)|round(1) }}%</td><td>{{ (benchmark.metrics.fixed_pandas.changed_recall * 100)|round(1) }}%</td><td>{{ (benchmark.metrics.fixed_pandas.incorrect_change_rate * 100)|round(1) }}%</td></tr>
+      <tr class="agent-row"><th scope="row">AutoPrep evidence agent</th><td><strong>{{ (benchmark.metrics.agent.exact_accuracy * 100)|round(2) }}%</strong></td><td>{{ (benchmark.metrics.agent.changed_precision * 100)|round(1) }}%</td><td>{{ (benchmark.metrics.agent.changed_recall * 100)|round(1) }}%</td><td>{{ (benchmark.metrics.agent.incorrect_change_rate * 100)|round(1) }}%</td></tr>
+    </tbody></table></div>
+
+    <div class="row g-3 mt-2">
+      <div class="col-md-6 col-xl-3"><div class="eval-proof"><span class="proof-icon">↗</span><div><b>{{ benchmark.human_review_cases }}/{{ benchmark.cases // benchmark.scenario_families }}</b><span>duplicate cases routed to human review</span></div></div></div>
+      <div class="col-md-6 col-xl-3"><div class="eval-proof"><span class="proof-icon">✓</span><div><b>{{ (benchmark.metrics.agent.review_precision * 100)|round(0)|int }}% / {{ (benchmark.metrics.agent.review_recall * 100)|round(0)|int }}%</b><span>review precision / recall on these synthetic labels</span></div></div></div>
+      <div class="col-md-6 col-xl-3"><div class="eval-proof"><span class="proof-icon">✦</span><div><b>{{ benchmark.agent_operations }}</b><span>evidence-triggered edits executed</span></div></div></div>
+      <div class="col-md-6 col-xl-3"><div class="eval-proof"><span class="proof-icon">⏱</span><div><b>{{ benchmark.failed_runs }}</b><span>failed agent runs in this suite</span></div></div></div>
+    </div>
+
+    <div class="agent-value-panel mt-4"><div class="eyebrow">THE AGENT’S VALUE ADDITION</div><h3 class="h5 mt-2">Equal accuracy, more useful decisions</h3><p class="mb-2">On this controlled suite, the agent and fixed trim baseline both reach 100% exact-cell accuracy. The agent’s distinctive result is that it identifies duplicate rows as a consequential decision and routed all 10 duplicate cases to review. A no-op or fixed trim script has no review workflow.</p><p class="small mb-0">This is not proof of broad superiority: the suite has 100 small synthetic cases, exactly 10 per family, and only one safe automatic transformation. Review labels and outcomes are specific to this benchmark.</p></div>
+
+    <h3 class="h5 mt-4">Results by scenario</h3>
+    <div class="table-responsive"><table class="table table-sm align-middle"><caption class="caption-top">Agent output exact match and review routing by family.</caption><thead><tr><th scope="col">Scenario family</th><th scope="col">Cases</th><th scope="col">Exact match</th><th scope="col">Review cases</th><th scope="col">Expected behavior</th></tr></thead><tbody>
+      {% for item in benchmark.families %}<tr><th scope="row">{{ item.family|replace('_',' ')|title }}</th><td>{{ item.cases }}</td><td>{{ (item.agent_accuracy * 100)|round(1) }}%</td><td>{{ item.routed_for_review }}{% if item.expected_review %} / {{ item.expected_review }}{% endif %}</td><td>{% if item.expected_review %}Ask before removing duplicate records{% elif item.family == 'whitespace' %}Trim observed outer whitespace{% else %}Preserve ambiguous or potentially meaningful values{% endif %}</td></tr>{% endfor %}
+    </tbody></table></div>
+    <p class="benchmark-caveat small mb-0"><strong>Scope:</strong> synthetic, reproducible regression data—not a real-world accuracy guarantee. The score is historical; the latest benchmark code reports richer metrics, but a fresh run has not yet been recorded on this deployment.</p>
+  </div>
+</section>
+{% endif %}
+
+<section class="card mb-4"><div class="card-body p-4"><div class="d-flex justify-content-between gap-3 flex-wrap align-items-start"><div><div class="eyebrow">RUN IT YOURSELF</div><h2 class="h4 mt-2">Repeatable benchmark</h2><p class="text-secondary mb-0">Creates 100 seeded cases and compares no-op, fixed pandas, and scripted LangGraph behavior. Results are saved below.</p></div><form method="post" action="{{ url_for('main.run_evaluation') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="mode" value="scripted-agent"><button class="btn btn-primary">Run 100 scripted cases</button></form></div></div></section>
+
+<section><div class="eyebrow">RUN HISTORY</div><h2 class="h4 mt-2">Saved runs</h2>
+{% for run in runs %}<div class="card mb-3"><div class="card-body p-4"><div class="d-flex justify-content-between"><h3 class="h5">{{ run.mode }} · {{ run.summary.get('cases',0) }} cases</h3><span class="badge status">{{ run.status }}</span></div><p class="small text-secondary">Run {{ run.run_id }} · {{ run.created_at }}</p>{% if run.summary.get('mean_exact_accuracy') %}<div class="row">{% for method,value in run.summary.mean_exact_accuracy.items() %}<div class="col-md-4"><div class="metric">{{ (value*100)|round(1) }}%</div><small>{{ method|replace('_',' ')|title }}</small></div>{% endfor %}</div>{% else %}<p>{{ run.summary.get('reason','No result details') }}</p>{% endif %}<p class="small mt-3 mb-0">Scenario families: {{ run.summary.get('scenario_families',[])|join(', ') }}</p></div></div>{% else %}<div class="card"><div class="card-body text-secondary">No saved runs yet. The checked-in reference run above remains available until you create one here.</div></div>{% endfor %}
+</section>
+{% endblock %}

@@ -13,7 +13,7 @@
   {% endif %}
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark"><div class="container"><a class="navbar-brand" href="{{ url_for('main.index') }}">Auto Prep <span>✦</span></a><div class="d-flex align-items-center gap-3"><span class="navbar-text">From messy data to trusted data</span></div></div></nav>
+<nav class="navbar navbar-expand-lg navbar-dark"><div class="container"><a class="navbar-brand" href="{{ url_for('main.index') }}">Auto Prep <span>✦</span></a><div class="d-flex align-items-center gap-3"><a class="nav-link" href="{{ url_for('main.index') }}#agent-value">Agentic AI</a><a class="nav-link" href="{{ url_for('main.evaluation_lab') }}">Evaluation Lab</a><span class="navbar-text d-none d-lg-inline">From messy data to trusted data</span></div></div></nav>
 <main class="container py-4">
   {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,message in messages %}<div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
   {% block content %}{% endblock %}
@@ -27,7 +27,7 @@
     <div class="processing-track mt-3" aria-hidden="true"><span></span></div>
   </div>
 </div>
-<footer class="container py-4 small text-secondary">Auto Prep · deterministic transformations, human controlled decisions</footer>
+<footer class="container py-4 small text-secondary">Auto Prep · bounded agent planning · deterministic tools · human controlled decisions</footer>
 <script>
 (() => {
   const overlay = document.getElementById('processingOverlay');

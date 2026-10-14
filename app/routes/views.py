@@ -4,6 +4,7 @@ import io
 import json
 import zipfile
 import secrets
+from pathlib import Path
 
 import pandas as pd
 
@@ -52,7 +53,65 @@ def css_asset(filename: str):
 @bp.get("/")
 def index():
     jobs = list_jobs(_database())
-    return render_template("index.html", jobs=jobs, counts=job_counts(_database()))
+    return render_template("index.html", jobs=jobs, counts=job_counts(_database()),
+                           benchmark=_reference_benchmark())
+
+
+def _reference_benchmark():
+    """Load the checked-in historical benchmark snapshot for public, auditable display."""
+    report_path = Path(__file__).resolve().parents[2] / "data" / "benchmarks" / "latest.json"
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        cases = report.get("case_results", [])
+        if not cases:
+            return None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+    strategies = {
+        "no_op": ("noop_exact_accuracy", "noop_changes"),
+        "fixed_pandas": ("baseline_exact_accuracy", "baseline_changes"),
+        "agent": ("agent_exact_accuracy", "agent_changes"),
+    }
+    metrics = {}
+    for label, (accuracy_key, changes_key) in strategies.items():
+        changes = [case[changes_key] for case in cases]
+        metrics[label] = {
+            "exact_accuracy": report.get("mean_exact_accuracy", {}).get(accuracy_key),
+            "changed_precision": sum(item["changed_cell_precision"] for item in changes) / len(changes),
+            "changed_recall": sum(item["changed_cell_recall"] for item in changes) / len(changes),
+            "incorrect_change_rate": sum(item["incorrect_change_rate"] for item in changes) / len(changes),
+        }
+
+    family_results = []
+    for family in sorted({case["family"] for case in cases}):
+        group = [case for case in cases if case["family"] == family]
+        expected_review = family == "duplicate"
+        predicted_reviews = sum(bool(case.get("review_required")) for case in group)
+        family_results.append({
+            "family": family,
+            "cases": len(group),
+            "agent_accuracy": sum(case["agent_exact_accuracy"] for case in group) / len(group),
+            "expected_review": sum(1 for _ in group) if expected_review else 0,
+            "routed_for_review": predicted_reviews,
+        })
+    expected_review_cases = sum(item["expected_review"] for item in family_results)
+    routed_review_cases = sum(item["routed_for_review"] for item in family_results)
+    review_true_positives = sum(min(item["expected_review"], item["routed_for_review"])
+                                for item in family_results if item["expected_review"])
+    metrics["agent"]["review_precision"] = (
+        review_true_positives / routed_review_cases if routed_review_cases else 1.0)
+    metrics["agent"]["review_recall"] = (
+        review_true_positives / expected_review_cases if expected_review_cases else 1.0)
+    return {"status": report.get("status"), "mode": report.get("mode"),
+            "generated_at": report.get("generated_at"), "seed": report.get("seed"),
+            "cases": len(cases), "scenario_families": len(family_results),
+            "duration_seconds": report.get("duration_seconds"),
+            "failed_runs": report.get("failed_runs", 0),
+            "human_review_cases": report.get("human_review_cases", 0),
+            "agent_operations": sum(case.get("agent_operations", 0) for case in cases),
+            "average_operations": report.get("average_operations", 0),
+            "metrics": metrics, "families": family_results}
 
 
 @bp.post("/sheets")
@@ -254,7 +313,8 @@ def audit_package(job_id: str):
 
 @bp.get("/evaluation")
 def evaluation_lab():
-    return render_template("evaluation.html", runs=list_evaluations(_database()))
+    return render_template("evaluation.html", runs=list_evaluations(_database()),
+                           benchmark=_reference_benchmark())
 
 
 @bp.post("/evaluation/run")
