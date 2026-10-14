@@ -29,6 +29,14 @@ def frame_hash(frame: pd.DataFrame) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def operation_signature(operation: dict[str, Any]) -> str:
+    canonical = json.dumps({"type": operation.get("operation_type"),
+        "columns": operation.get("target_columns", []),
+        "arguments": operation.get("arguments", {})}, sort_keys=True,
+        ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
 def _cell_diff(before: pd.DataFrame, after: pd.DataFrame, op: dict[str, Any]) -> dict[str, Any]:
     if "_source_row_id" not in before or "_source_row_id" not in after:
         return {}
@@ -68,14 +76,21 @@ def build_workflow():
             return {"status": "SAFE_STOP", "error": "Maximum operation count reached."}
         if state.get("steps", 0) >= state["max_steps"]:
             return {"status": "SAFE_STOP", "error": "Maximum agent step count reached."}
-        operations = state["planner"].propose(state["frame"], state["objective"])
+        operations = state["planner"].propose(state["frame"], state["objective"],
+                                               state.get("planner_feedback"))
         serialized = [op.model_dump(mode="json") for op in operations]
         completed = {entry["operation_id"] for entry in state.get("ledger", [])}
-        serialized = [op for op in serialized if op["operation_id"] not in completed]
+        rejected = set(state.get("rejected_operation_signatures", []))
+        serialized = [op for op in serialized if op["operation_id"] not in completed
+                      and operation_signature(op) not in rejected]
         pending = next((op for op in serialized if not op["requires_approval"]), None)
         review = any(op["requires_approval"] for op in serialized)
         return {"plan": serialized, "next_operation": pending, "review_required": review,
-                "status": "NEEDS_REVIEW" if pending is None and review else ("READY_TO_FINALIZE" if not serialized else "EXECUTING"),
+                "status": "NEEDS_REVIEW" if pending is None and review else
+                    ("FAILED" if not serialized and state.get("failed_operations") else
+                     ("READY_TO_FINALIZE" if not serialized else "EXECUTING")),
+                "error": ("No alternative action remained after a tool rejection."
+                          if not serialized and state.get("failed_operations") else None),
                 "steps": state.get("steps", 0) + 1}
 
     def execute_node(state: WorkflowState) -> dict[str, Any]:
@@ -89,8 +104,17 @@ def build_workflow():
                                        approved=not op.get("requires_approval", False))
         except (ValueError, TypeError) as exc:
             failed = {**op, "status": "FAILED", "error": str(exc)[:500]}
+            feedback = {"tool_rejection": (
+                            "The action failed local schema, policy, or tool validation. "
+                            "Do not repeat it; propose a different supported action or stop."),
+                        "rejection_type": type(exc).__name__,
+                        "failed_operation": {"operation_type": op.get("operation_type"),
+                                             "target_columns": op.get("target_columns", [])}}
             return {"next_operation": None, "failed_operations": state.get("failed_operations", []) + [failed],
-                    "status": "FAILED", "error": "Operation rejected; the previous candidate was preserved."}
+                    "rejected_operation_signatures": state.get("rejected_operation_signatures", []) +
+                        [operation_signature(op)],
+                    "planner_feedback": feedback, "status": "REPLANNING",
+                    "error": "Operation rejected; the previous candidate was preserved."}
         op["evidence"] = {**op.get("evidence", {}), **_cell_diff(before, candidate, op)}
         op["input_hash"] = frame_hash(before)
         op["output_hash"] = frame_hash(candidate)
@@ -107,23 +131,36 @@ def build_workflow():
             ledger[-1] = {**ledger[-1], "validation_results": result}
         else:
             ledger = []
-        if state.get("failed_operations"):
-            result["passed"] = False
-            result["issues"].append({"rule_id": "operation_rejected", "severity": "ERROR",
-                                     "message": state.get("error", "Operation was rejected.")})
-            return {"validation": result, "ledger": ledger, "status": "FAILED"}
         if not result["passed"]:
             if ledger:
                 ledger[-1] = {**ledger[-1], "status": OperationStatus.FAILED.value}
             return {"frame": state.get("last_valid_frame", state["original_frame"]),
                     "ledger": ledger, "validation": result, "status": "FAILED",
                     "error": "Candidate failed validation; the previous valid version was restored."}
-        return {"ledger": ledger, "validation": result, "status": "PLANNING"}
+        completed = ([{"operation_type": entry.get("operation_type"),
+                       "target_columns": entry.get("target_columns", []),
+                       "status": entry.get("status")}
+                      for entry in ledger[-3:]])
+        feedback = {"validation_passed": bool(result.get("passed")),
+                    "validation_issues": [{"rule_id": issue.get("rule_id"),
+                                           "severity": issue.get("severity"),
+                                           "message": issue.get("message")}
+                                          for issue in result.get("issues", [])],
+                    "recent_operations": completed}
+        prior_feedback = state.get("planner_feedback", {})
+        if prior_feedback.get("tool_rejection"):
+            feedback["previous_tool_rejection"] = prior_feedback["tool_rejection"]
+            feedback["failed_operation"] = prior_feedback.get("failed_operation", {})
+        return {"ledger": ledger, "validation": result, "planner_feedback": feedback,
+                "status": "PLANNING"}
 
     def route_plan(state: WorkflowState) -> str:
-        if state.get("status") in {"SAFE_STOP", "NEEDS_REVIEW"}:
+        if state.get("status") in {"SAFE_STOP", "NEEDS_REVIEW", "FAILED"}:
             return "end"
         return "execute" if state.get("next_operation") else "end"
+
+    def route_execute(state: WorkflowState) -> str:
+        return "plan" if state.get("status") == "REPLANNING" else "validate"
 
     def route_validation(state: WorkflowState) -> str:
         if state.get("status") == "FAILED":
@@ -140,7 +177,7 @@ def build_workflow():
     graph.add_node("safe_stop", stop_node)
     graph.add_edge(START, "plan")
     graph.add_conditional_edges("plan", route_plan, {"execute": "execute", "end": END})
-    graph.add_edge("execute", "validate")
+    graph.add_conditional_edges("execute", route_execute, {"plan": "plan", "validate": "validate"})
     graph.add_conditional_edges("validate", route_validation, {"plan": "plan", "stop": "safe_stop", "end": END})
     graph.add_edge("safe_stop", END)
     return graph.compile()
@@ -154,5 +191,6 @@ def run_workflow(frame: pd.DataFrame, objective: str, planner: Any, max_steps: i
         "objective": objective, "planner": planner, "max_steps": max_steps,
         "max_operations": max_operations, "policies": policies or {},
         "steps": 0, "plan": [], "next_operation": None, "ledger": [],
+        "rejected_operation_signatures": [],
         "review_required": False, "status": "PLANNING", "error": None}
     return build_workflow().invoke(state, {"recursion_limit": max(8, max_steps * 4)})

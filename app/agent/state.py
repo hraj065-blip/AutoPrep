@@ -17,6 +17,8 @@ class WorkflowState(TypedDict, total=False):
     next_operation: dict[str, Any] | None
     ledger: list[dict[str, Any]]
     validation: dict[str, Any]
+    planner_feedback: dict[str, Any]
+    rejected_operation_signatures: list[str]
     review_required: bool
     status: str
     error: str | None

@@ -13,7 +13,7 @@
 - Exports sanitized CSV/XLSX and an audit ZIP with reports and ledger.
 - Includes a seeded synthetic evaluation harness comparing no-op, fixed pandas, and scripted-agent behavior.
 
-The application is agentic because its planner selects actions from the measured dataset profile; LangGraph routes those actions through policy, deterministic tools, and validation; and the resulting evidence affects whether the workflow continues, requests review, or safely stops. A planner proposal is not authorization. Authorization is decided by policy and the user's review; tools execute the approved operation; validation independently judges the candidate.
+The application is agentic because its planner selects actions from the measured dataset profile; LangGraph routes those actions through policy, deterministic tools, and validation; and compact validation/tool feedback informs later planning passes. Rejected action signatures cannot be repeated and retries share a bounded step budget. A planner proposal is not authorization. Authorization is decided by policy and the user's review; tools execute the approved operation; validation independently judges the candidate. Hosted planners receive issue summaries and operation metadata, never cell values.
 
 ## Architecture
 
