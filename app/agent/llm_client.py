@@ -116,6 +116,13 @@ class ResponsesAPIPlannerClient:
                         details = " (provider returned JSON without a structured error object)"
                 except (UnicodeDecodeError, json.JSONDecodeError, OSError):
                     details = " (provider error body was empty or non-JSON)"
+                safe_headers = []
+                for header_name in ("content-type", "server", "via", "x-groq-request-id", "cf-ray"):
+                    value = exc.headers.get(header_name) if exc.headers else None
+                    if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.:/;=,+ -]{1,120}", value):
+                        safe_headers.append(f"{header_name}={value}")
+                if safe_headers:
+                    details = details[:-1] + "; " + ", ".join(safe_headers) + ")"
                 last_error = PlannerProviderError(
                     f"{self.provider.title()} provider returned HTTP {exc.code}{details}."
                 )

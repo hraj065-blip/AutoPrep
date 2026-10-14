@@ -67,7 +67,8 @@ def test_provider_http_error_exposes_safe_identifiers_only(monkeypatch):
     }}).encode()
 
     def forbidden(*args, **kwargs):
-        raise HTTPError("https://api.example.test/responses", 403, "Forbidden", {}, BytesIO(body))
+        raise HTTPError("https://api.example.test/responses", 403, "Forbidden",
+                        {"content-type": "application/json", "server": "groq"}, BytesIO(body))
 
     monkeypatch.setattr("app.agent.llm_client.urlopen", forbidden)
     client = OpenAIPlannerClient(api_key="test-key", model="test-model")
@@ -76,4 +77,5 @@ def test_provider_http_error_exposes_safe_identifiers_only(monkeypatch):
     assert "HTTP 403" in str(error.value)
     assert "permissions_error" in str(error.value)
     assert "model_permission_blocked_project" in str(error.value)
+    assert "server=groq" in str(error.value)
     assert "private request content" not in str(error.value)
