@@ -84,6 +84,17 @@ def create_job(database: str, raw: bytes, filename: str, objective: str, sheet: 
             diagnostic = re.search(r"HTTP (?:401|403|404|429|500|502|503|504) \(([^)]{1,250})\)", error_text)
             if diagnostic and re.fullmatch(r"[A-Za-z0-9_.:/=, ;()-]{1,250}", diagnostic.group(1)):
                 detail += f" ({diagnostic.group(1)})"
+            elif not provider_status:
+                safe_reasons = (
+                    ("invalid planner JSON", "invalid_json_response"),
+                    ("no message content", "empty_model_response"),
+                    ("no structured planner output", "missing_structured_output"),
+                    ("did not match the expected structure", "planner_schema_mismatch"),
+                    ("response was not completed", "incomplete_provider_response"),
+                )
+                reason_code = next((code for phrase, code in safe_reasons if phrase in error_text.lower()), None)
+                if reason_code:
+                    detail = f"a hosted response-format issue ({reason_code})"
             planner_fallback = {
                 "provider": hosted_client.provider,
                 "model": hosted_client.model,
