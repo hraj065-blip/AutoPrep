@@ -31,7 +31,7 @@
     <div class="table-responsive"><table class="table table-sm align-middle"><caption class="caption-top">Agent output exact match and review routing by family.</caption><thead><tr><th scope="col">Scenario family</th><th scope="col">Cases</th><th scope="col">Exact match</th><th scope="col">Review cases</th><th scope="col">Expected behavior</th></tr></thead><tbody>
       {% for item in benchmark.families %}<tr><th scope="row">{{ item.family|replace('_',' ')|title }}</th><td>{{ item.cases }}</td><td>{{ (item.agent_accuracy * 100)|round(1) }}%</td><td>{{ item.routed_for_review }}{% if item.expected_review %} / {{ item.expected_review }}{% endif %}</td><td>{% if item.expected_review %}Ask before removing duplicate records{% elif item.family == 'whitespace' %}Trim observed outer whitespace{% else %}Preserve ambiguous or potentially meaningful values{% endif %}</td></tr>{% endfor %}
     </tbody></table></div>
-    <p class="benchmark-caveat small mb-0"><strong>Scope:</strong> synthetic, reproducible regression data—not a real-world accuracy guarantee. The score is historical; the latest benchmark code reports richer metrics, but a fresh run has not yet been recorded on this deployment.</p>
+    <p class="benchmark-caveat small mb-0"><strong>Scope:</strong> synthetic, reproducible regression data, not a real-world accuracy guarantee. The checked-in reference is historical.{% if runs %} A fresh deployment run is shown in Run History below.{% else %} Run the benchmark below to record a fresh deployment result.{% endif %}</p>
   </div>
 </section>
 {% endif %}
