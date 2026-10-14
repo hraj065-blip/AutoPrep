@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -91,7 +92,25 @@ class ResponsesAPIPlannerClient:
                         operation["arguments"] = json.loads(operation["arguments"])
                 return parsed
             except HTTPError as exc:
-                last_error = PlannerProviderError(f"{self.provider.title()} provider returned HTTP {exc.code}.")
+                # Surface only stable, non-sensitive error identifiers. Provider messages may
+                # echo request content, so never persist or expose the response body verbatim.
+                details = ""
+                try:
+                    body = json.loads(exc.read(16_384).decode("utf-8"))
+                    error = body.get("error", {}) if isinstance(body, dict) else {}
+                    if isinstance(error, dict):
+                        identifiers = []
+                        for name in ("type", "code"):
+                            value = error.get(name)
+                            if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.-]{1,80}", value):
+                                identifiers.append(f"{name}={value}")
+                        if identifiers:
+                            details = f" ({', '.join(identifiers)})"
+                except (UnicodeDecodeError, json.JSONDecodeError, OSError):
+                    pass
+                last_error = PlannerProviderError(
+                    f"{self.provider.title()} provider returned HTTP {exc.code}{details}."
+                )
                 if exc.code < 500 or attempt == 1:
                     break
             except (URLError, TimeoutError, json.JSONDecodeError) as exc:

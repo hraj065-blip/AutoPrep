@@ -1,4 +1,6 @@
 import json
+from io import BytesIO
+from urllib.error import HTTPError
 
 import pandas as pd
 import pytest
@@ -55,3 +57,23 @@ def test_openai_response_json_arguments_and_usage(monkeypatch):
     monkeypatch.setattr("app.agent.llm_client.urlopen", lambda *args, **kwargs: Response())
     result = OpenAIPlannerClient(api_key="test-key", model="test-model").propose_plan({"objective": "x"})
     assert result["operations"][0]["arguments"] == {}
+
+
+def test_provider_http_error_exposes_safe_identifiers_only(monkeypatch):
+    body = json.dumps({"error": {
+        "type": "permissions_error",
+        "code": "model_permission_blocked_project",
+        "message": "private request content should not be shown",
+    }}).encode()
+
+    def forbidden(*args, **kwargs):
+        raise HTTPError("https://api.example.test/responses", 403, "Forbidden", {}, BytesIO(body))
+
+    monkeypatch.setattr("app.agent.llm_client.urlopen", forbidden)
+    client = OpenAIPlannerClient(api_key="test-key", model="test-model")
+    with pytest.raises(PlannerProviderError) as error:
+        client.propose_plan({"objective": "x"})
+    assert "HTTP 403" in str(error.value)
+    assert "permissions_error" in str(error.value)
+    assert "model_permission_blocked_project" in str(error.value)
+    assert "private request content" not in str(error.value)
