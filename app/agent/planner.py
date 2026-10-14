@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Protocol
 
 import pandas as pd
+from pydantic import ValidationError
 
 from app.domain.models import PreparationOperation, RiskLevel
 from app.profiling.profiler import profile_dataset
@@ -70,12 +71,42 @@ class HostedPlanner:
             "workflow_feedback": feedback or {},
             "allowed_tools": ["trim_whitespace", "normalize_whitespace", "normalize_case", "parse_numeric",
                 "parse_date", "rename_columns", "normalize_column_names", "drop_duplicates", "fill_missing",
-                "normalize_categories", "replace_sentinels", "cast_type"], "policies": self.policies}
+                "normalize_categories", "replace_sentinels", "cast_type"],
+            "tool_argument_contracts": {
+                "trim_whitespace": {"allowed": []},
+                "normalize_whitespace": {"allowed": []},
+                "normalize_case": {"allowed": ["mode"], "mode_values": ["lower", "upper", "title"]},
+                "parse_numeric": {"allowed": ["decimal", "thousands"]},
+                "parse_date": {"allowed": ["dayfirst", "format"]},
+                "rename_columns": {"required": ["mapping"], "allowed": ["mapping"]},
+                "normalize_column_names": {"allowed": []},
+                "drop_duplicates": {"allowed": ["subset", "keep"], "keep_values": ["first", "last"]},
+                "fill_missing": {"allowed": ["value", "method", "sentinels"],
+                                 "method_values": ["mean", "median", "mode"],
+                                 "rule": "exactly one of value or method is required"},
+                "normalize_categories": {"required": ["mapping"], "allowed": ["mapping"]},
+                "replace_sentinels": {"required": ["values"], "allowed": ["values"]},
+                "cast_type": {"required": ["target"], "allowed": ["target"],
+                              "target_values": ["string", "integer", "decimal", "number", "boolean", "date", "datetime"]},
+            }, "policies": self.policies}
         response = self.client.propose_plan(context)
         proposals = []
         for item in response["operations"]:
-            validated = OperationSpec.model_validate({"type": item["type"], "columns": item["columns"],
-                                                       "arguments": item["arguments"]})
+            arguments = item["arguments"]
+            # Older prompts and models sometimes spell this documented tool field
+            # as target_type. Normalize the harmless alias before strict validation.
+            if item.get("type") == "cast_type" and isinstance(arguments, dict):
+                if "target" not in arguments and "target_type" in arguments:
+                    arguments["target"] = arguments.pop("target_type")
+                else:
+                    arguments.pop("target_type", None)
+            try:
+                validated = OperationSpec.model_validate({"type": item["type"], "columns": item["columns"],
+                                                           "arguments": arguments})
+            except (ValidationError, ValueError, TypeError) as exc:
+                # Invalid model proposals should use the same safe, unchanged-source
+                # offline fallback as provider failures instead of failing the job.
+                raise PlannerProviderError("Hosted planner proposal failed local operation-schema validation.") from exc
             requires_approval = validated.type not in {"trim_whitespace", "validate_constraint"}
             proposals.append(PreparationOperation(operation_type=validated.type,
                 target_columns=validated.columns, arguments=validated.arguments,
