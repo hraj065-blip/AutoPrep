@@ -10,7 +10,8 @@ from typing import Any
 import pandas as pd
 
 from app.agent.graph import _cell_diff, frame_hash, run_workflow
-from app.agent.planner import configured_planner
+from app.agent.llm_client import PlannerProviderError
+from app.agent.planner import EvidencePlanner, configured_planner
 from app.domain.models import Job, JobStatus, OperationStatus, ReviewDecision, ReviewItem, RiskLevel, transition_payload
 from app.ingestion.readers import read_dataset, validate_frame
 from app.persistence import db
@@ -68,8 +69,34 @@ def create_job(database: str, raw: bytes, filename: str, objective: str, sheet: 
     db.update_job(database, job["job_id"], payload=job, profile=profile, event=("profiled", {"rows": len(frame), "columns": len(frame.columns)-1}))
     job = transition_payload(job, JobStatus.PLANNING)
     db.update_job(database, job["job_id"], payload=job, event=("planning_started", {}))
+    planner_fallback = None
     try:
-        result = run_workflow(frame, objective, planner, max_agent_steps, max_operations)
+        try:
+            result = run_workflow(frame, objective, planner, max_agent_steps, max_operations)
+        except PlannerProviderError as exc:
+            if hosted_client is None:
+                raise
+            error_text = str(exc)
+            provider_codes = ("401", "403", "404", "429", "500", "502", "503", "504")
+            provider_status = next((code for code in provider_codes if f"HTTP {code}" in error_text), None)
+            detail = f"HTTP {provider_status}" if provider_status else "a provider error"
+            planner_fallback = {
+                "provider": hosted_client.provider,
+                "model": hosted_client.model,
+                "message": (
+                    f"The hosted {hosted_client.provider.title()} planner returned {detail}. "
+                    "This job continued with the offline evidence planner; check the provider key, "
+                    "model access, and account permissions to restore hosted planning."
+                ),
+            }
+            logger.warning("Hosted planner failed; retrying with offline evidence planner",
+                           extra={
+                               "job_id": job["job_id"], "event_type": "planner_fallback",
+                               "provider": hosted_client.provider, "provider_status": provider_status,
+                           })
+            result = run_workflow(
+                frame, objective, EvidencePlanner(), max_agent_steps, max_operations
+            )
     except Exception:
         logger.exception("PrepPilot workflow failed", extra={"job_id": job["job_id"], "event_type": "workflow_failure"})
         job = transition_payload(job, JobStatus.FAILED)
@@ -98,7 +125,12 @@ def create_job(database: str, raw: bytes, filename: str, objective: str, sheet: 
     executed_ledger = [op for op in ledger if op.get("status") == OperationStatus.EXECUTED.value]
     job["current_candidate_version"] = len(executed_ledger)
     job["metadata"]["workflow_status"] = result.get("status")
-    if hosted_client:
+    if planner_fallback:
+        job["metadata"]["planner_fallback"] = planner_fallback
+        job["metadata"]["planner"] = {
+            "provider": "offline_evidence", "fallback_from": hosted_client.provider
+        }
+    elif hosted_client:
         job["metadata"]["planner"] = {"provider": hosted_client.provider, "model": hosted_client.model,
                                          "usage": hosted_client.last_usage}
     if result.get("error"):
@@ -329,10 +361,27 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
     item = get_job(database, job_id)
     if not item:
         raise KeyError("Job not found")
-    if item["payload"]["status"] not in {JobStatus.NEEDS_REVIEW.value, JobStatus.READY_TO_FINALIZE.value}:
-        raise ValueError("A YAML spec can be applied after the current preparation run reaches a safe stop.")
     if len(spec.operations) > spec.execution.max_operations:
         raise ValueError("Specification operation count exceeds its declared limit.")
+    provider_recovery = (
+        item["payload"]["status"] == JobStatus.FAILED.value
+        and item["payload"].get("failure_code") == "LLM_PROVIDER_ERROR"
+        and item["payload"].get("current_candidate_version", 0) == 0
+        and not item["operations"]
+        and not item["reviews"]
+    )
+    editable_statuses = {JobStatus.NEEDS_REVIEW.value, JobStatus.READY_TO_FINALIZE.value}
+    if item["payload"]["status"] not in editable_statuses and not provider_recovery:
+        raise ValueError(
+            "A YAML spec can be applied to a reviewable or ready job. A provider-failed job "
+            "can be recovered only when no operations were applied."
+        )
+    if provider_recovery:
+        item["payload"] = transition_payload(item["payload"], JobStatus.PLANNING)
+        item["payload"]["failure_code"] = None
+        item["payload"]["failure_message"] = None
+        item["payload"]["current_run_id"] = str(uuid.uuid4())
+        item["payload"]["metadata"]["recovered_from_provider_failure"] = True
     max_steps = min(max_steps, spec.execution.max_agent_steps)
     frame = candidate_frame(item)
     ops = []
@@ -397,6 +446,13 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
         if key in {"allow_row_deletion", "allow_imputation", "allow_sentinel_replacement"} else value
         for key, value in declared_policies.items()}
     item["payload"]["metadata"]["execution"] = spec.execution.model_dump(mode="json")
+    item["payload"]["metadata"]["workflow_status"] = result.get("status")
+    item["payload"]["metadata"]["planner"] = {"provider": "user_yaml", "mode": "explicit_spec"}
+    item["payload"]["agent_step_count"] = int(result.get("steps", 0))
+    if result.get("error"):
+        item["payload"]["metadata"]["workflow_message"] = result["error"]
+    else:
+        item["payload"]["metadata"].pop("workflow_message", None)
     spec_status = (JobStatus.FAILED if result.get("status") in {"SAFE_STOP", "FAILED"} else
         JobStatus.NEEDS_REVIEW if any(r["status"] == "OPEN" for r in reviews) else JobStatus.READY_TO_FINALIZE)
     if spec_status != JobStatus(item["payload"]["status"]):
@@ -419,7 +475,12 @@ def apply_yaml_spec(database: str, job_id: str, yaml_text: str, max_steps: int) 
         item["payload"]["failure_message"] = "A critical specification rule failed; finalization is blocked."
     db.update_job(database, job_id, payload=item["payload"], candidate=_df_bytes(candidate),
         operations=all_ledger, reviews=reviews,
-        event=("yaml_spec_applied", {"version": spec.version, "operations": len(ops)}))
+        event=("yaml_spec_applied", {
+            "version": spec.version,
+            "operations": len(ops),
+            "recovered_from_provider_failure": provider_recovery,
+            "run_id": item["payload"].get("current_run_id") if provider_recovery else None,
+        }))
     snapshot = frame.copy(deep=True)
     for operation in successful_yaml_ops:
         tool = {"type": operation["operation_type"], "columns": operation["target_columns"], "arguments": operation["arguments"]}

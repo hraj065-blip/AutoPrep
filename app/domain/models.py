@@ -134,7 +134,8 @@ ALLOWED_TRANSITIONS: dict[str, set[str]] = {
     JobStatus.NEEDS_REVIEW: {JobStatus.PLANNING, JobStatus.EXECUTING, JobStatus.READY_TO_FINALIZE, JobStatus.FAILED, JobStatus.CANCELLED},
     JobStatus.READY_TO_FINALIZE: {JobStatus.NEEDS_REVIEW, JobStatus.COMPLETED, JobStatus.FAILED},
     JobStatus.COMPLETED: set(),
-    JobStatus.FAILED: set(),
+    # Provider failures may be recovered once from the immutable source with an explicit YAML spec.
+    JobStatus.FAILED: {JobStatus.PLANNING},
     JobStatus.CANCELLED: set(),
 }
 

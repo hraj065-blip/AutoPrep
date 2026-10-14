@@ -39,6 +39,67 @@ def test_upload_rejects_unsupported_file(client):
     assert b"Only CSV and XLSX" in response.data
 
 
+def test_hosted_planner_provider_error_falls_back_to_offline_evidence_planner(app, monkeypatch):
+    from types import SimpleNamespace
+    import app.services.jobs as jobs
+    from app.agent.llm_client import PlannerProviderError
+
+    class BrokenHostedPlanner:
+        def propose(self, frame, objective, feedback=None):
+            raise PlannerProviderError("Groq planner request failed: Groq provider returned HTTP 403.")
+
+    hosted_client = SimpleNamespace(provider="groq", model="test-model", last_usage={})
+    monkeypatch.setattr(jobs, "configured_planner", lambda: (BrokenHostedPlanner(), hosted_client))
+    job = jobs.create_job(app.config["DATABASE_PATH"], b"name\n Alice \n", "source.csv", "prepare", None,
+                          100, 20, 5)
+
+    assert job["payload"]["status"] == "READY_TO_FINALIZE"
+    assert job["payload"]["metadata"]["planner"]["provider"] == "offline_evidence"
+    assert job["payload"]["metadata"]["planner_fallback"]["provider"] == "groq"
+    assert "HTTP 403" in job["payload"]["metadata"]["planner_fallback"]["message"]
+    assert job["candidate"].decode().splitlines()[1].endswith(",Alice")
+
+
+def test_provider_failed_job_can_resume_from_yaml_without_losing_source(app, monkeypatch):
+    from types import SimpleNamespace
+    import app.services.jobs as jobs
+    from app.agent.graph import run_workflow as real_run_workflow
+    from app.agent.llm_client import PlannerProviderError
+    from app.agent.planner import EvidencePlanner
+
+    class BrokenHostedPlanner:
+        def propose(self, frame, objective, feedback=None):
+            raise PlannerProviderError("Groq planner request failed: Groq provider returned HTTP 403.")
+
+    hosted_client = SimpleNamespace(provider="groq", model="test-model", last_usage={})
+    monkeypatch.setattr(jobs, "configured_planner", lambda: (BrokenHostedPlanner(), hosted_client))
+
+    def fail_both_attempts(frame, objective, planner, *args, **kwargs):
+        if isinstance(planner, EvidencePlanner):
+            raise RuntimeError("offline planner unavailable in this test")
+        return real_run_workflow(frame, objective, planner, *args, **kwargs)
+
+    monkeypatch.setattr(jobs, "run_workflow", fail_both_attempts)
+    failed = jobs.create_job(app.config["DATABASE_PATH"], b"name\n Alice \n", "source.csv", "prepare", None,
+                             100, 20, 5)
+    assert failed["payload"]["status"] == "FAILED"
+    assert failed["payload"]["failure_code"] == "LLM_PROVIDER_ERROR"
+    assert failed["payload"]["current_candidate_version"] == 0
+
+    monkeypatch.setattr(jobs, "run_workflow", real_run_workflow)
+    recovered = jobs.apply_yaml_spec(app.config["DATABASE_PATH"], failed["payload"]["job_id"], '''version: "1.0"
+operations:
+  - type: trim_whitespace
+    columns: [name]
+    arguments: {}
+''', 5)
+
+    assert recovered["payload"]["status"] == "READY_TO_FINALIZE"
+    assert recovered["payload"]["failure_code"] is None
+    assert recovered["payload"]["metadata"]["recovered_from_provider_failure"] is True
+    assert recovered["candidate"].decode().splitlines()[1].endswith(",Alice")
+
+
 def test_csrf_blocks_state_change(client):
     response = client.post("/jobs/fake/finalize", data={})
     assert response.status_code == 400
