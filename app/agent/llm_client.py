@@ -96,7 +96,8 @@ class ResponsesAPIPlannerClient:
                 # echo request content, so never persist or expose the response body verbatim.
                 details = ""
                 try:
-                    body = json.loads(exc.read(16_384).decode("utf-8"))
+                    raw_body = exc.read(16_384)
+                    body = json.loads(raw_body.decode("utf-8"))
                     error = body.get("error", {}) if isinstance(body, dict) else {}
                     if isinstance(error, dict):
                         identifiers = []
@@ -106,8 +107,15 @@ class ResponsesAPIPlannerClient:
                                 identifiers.append(f"{name}={value}")
                         if identifiers:
                             details = f" ({', '.join(identifiers)})"
+                        else:
+                            keys = sorted(key for key in error if isinstance(key, str)
+                                          and re.fullmatch(r"[A-Za-z0-9_.-]{1,40}", key))[:8]
+                            fields = ",".join(keys) if keys else "none"
+                            details = f" (provider error JSON without safe identifiers; fields={fields})"
+                    else:
+                        details = " (provider returned JSON without a structured error object)"
                 except (UnicodeDecodeError, json.JSONDecodeError, OSError):
-                    pass
+                    details = " (provider error body was empty or non-JSON)"
                 last_error = PlannerProviderError(
                     f"{self.provider.title()} provider returned HTTP {exc.code}{details}."
                 )
