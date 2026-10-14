@@ -4,6 +4,7 @@ import io
 import hashlib
 import json
 import logging
+import re
 import uuid
 from typing import Any
 
@@ -80,6 +81,9 @@ def create_job(database: str, raw: bytes, filename: str, objective: str, sheet: 
             provider_codes = ("401", "403", "404", "429", "500", "502", "503", "504")
             provider_status = next((code for code in provider_codes if f"HTTP {code}" in error_text), None)
             detail = f"HTTP {provider_status}" if provider_status else "a provider error"
+            diagnostic = re.search(r"HTTP (?:401|403|404|429|500|502|503|504) \(([^)]{1,250})\)", error_text)
+            if diagnostic and re.fullmatch(r"[A-Za-z0-9_.=, ;()-]{1,250}", diagnostic.group(1)):
+                detail += f" ({diagnostic.group(1)})"
             planner_fallback = {
                 "provider": hosted_client.provider,
                 "model": hosted_client.model,

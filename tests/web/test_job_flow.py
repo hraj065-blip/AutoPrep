@@ -46,7 +46,10 @@ def test_hosted_planner_provider_error_falls_back_to_offline_evidence_planner(ap
 
     class BrokenHostedPlanner:
         def propose(self, frame, objective, feedback=None):
-            raise PlannerProviderError("Groq planner request failed: Groq provider returned HTTP 403.")
+            raise PlannerProviderError(
+                "Groq planner request failed: Groq provider returned HTTP 403 "
+                "(type=permissions_error, code=model_permission_blocked_project)."
+            )
 
     hosted_client = SimpleNamespace(provider="groq", model="test-model", last_usage={})
     monkeypatch.setattr(jobs, "configured_planner", lambda: (BrokenHostedPlanner(), hosted_client))
@@ -57,6 +60,7 @@ def test_hosted_planner_provider_error_falls_back_to_offline_evidence_planner(ap
     assert job["payload"]["metadata"]["planner"]["provider"] == "offline_evidence"
     assert job["payload"]["metadata"]["planner_fallback"]["provider"] == "groq"
     assert "HTTP 403" in job["payload"]["metadata"]["planner_fallback"]["message"]
+    assert "model_permission_blocked_project" in job["payload"]["metadata"]["planner_fallback"]["message"]
     assert job["candidate"].decode().splitlines()[1].endswith(",Alice")
 
 
